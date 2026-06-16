@@ -7,7 +7,11 @@ TokenType identify_two_len_token(std::string str) {
         return TokenType::EQUAL_EQUAL;
     else if (str == "!=")
         return TokenType::BANG_EQUAL;
-
+    else if (str == ">=")
+        return TokenType::GREATER_EQUAL;
+    else if (str == "<=")
+        return TokenType::LESS_EQUAL;
+        
     return TokenType::UNKNOWN;
 }
 
@@ -39,6 +43,10 @@ TokenType identify_one_len_token(char ch) {
         return TokenType::EQUAL;
     case '!':
         return TokenType::BANG;
+    case '<':
+        return TokenType::LESS;
+    case '>':
+        return TokenType::GREATER;
     }
     return TokenType::UNKNOWN;
 }
@@ -68,7 +76,6 @@ std::pair<std::vector<std::string>, std::vector<std::string>> scan_file(const st
     for (int idx = 0; idx < file_contents.size(); idx++) {
         int line = idx + 1;
         const std::string &file_content = file_contents[idx];
-        std::cerr << line << " " << file_content << "\n";
 
         for (int i = 0; i < file_content.size(); ) {
             auto [token_type, add] = identify_token(i, file_content);

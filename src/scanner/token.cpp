@@ -65,6 +65,14 @@ std::string Token::token_type_to_string() const {
         return "BANG_EQUAL";
     case TokenType::BANG:
         return "BANG";
+    case TokenType::LESS:
+        return "LESS";
+    case TokenType::LESS_EQUAL:
+        return "LESS_EQUAL";
+    case TokenType::GREATER:
+        return "GREATER";
+    case TokenType::GREATER_EQUAL:
+        return "GREATER_EQUAL";
     case TokenType::UNKNOWN:
     default:
         return "";
@@ -105,6 +113,14 @@ std::string Token::token_type_to_symbol() const {
         return "!=";
     case TokenType::BANG:
         return "!";
+    case TokenType::LESS:
+        return "<";
+    case TokenType::LESS_EQUAL:
+        return "<=";
+    case TokenType::GREATER:
+        return ">";
+    case TokenType::GREATER_EQUAL:
+        return ">=";
     default:
         return "";
     }

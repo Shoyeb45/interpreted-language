@@ -18,11 +18,14 @@ enum class TokenType {
     STAR,
     EQUAL,
     BANG,
+    LESS,
+    GREATER,
 
     // 2 char token
     EQUAL_EQUAL,
     BANG_EQUAL,
-    
+    LESS_EQUAL,
+    GREATER_EQUAL,
     UNKNOWN
 };
 
