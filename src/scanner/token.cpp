@@ -61,6 +61,10 @@ std::string Token::token_type_to_string() const {
         return "EQUAL";
     case TokenType::EQUAL_EQUAL:
         return "EQUAL_EQUAL";
+    case TokenType::BANG_EQUAL:
+        return "BANG_EQUAL";
+    case TokenType::BANG:
+        return "BANG";
     case TokenType::UNKNOWN:
     default:
         return "";
@@ -97,6 +101,10 @@ std::string Token::token_type_to_symbol() const {
         return "=";
     case TokenType::EQUAL_EQUAL:
         return "==";
+    case TokenType::BANG_EQUAL:
+        return "!=";
+    case TokenType::BANG:
+        return "!";
     default:
         return "";
     }

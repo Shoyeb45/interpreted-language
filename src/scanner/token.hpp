@@ -4,6 +4,7 @@
 
 enum class TokenType {
     END_OF_FILE,
+    // 1 char token
     LEFT_PAREN,
     RIGHT_PAREN,
     LEFT_BRACE,
@@ -16,8 +17,12 @@ enum class TokenType {
     SLASH,
     STAR,
     EQUAL,
-    EQUAL_EQUAL,
+    BANG,
 
+    // 2 char token
+    EQUAL_EQUAL,
+    BANG_EQUAL,
+    
     UNKNOWN
 };
 

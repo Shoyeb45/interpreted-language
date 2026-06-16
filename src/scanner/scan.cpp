@@ -5,6 +5,9 @@
 TokenType identify_two_len_token(std::string str) {
     if (str == "==") 
         return TokenType::EQUAL_EQUAL;
+    else if (str == "!=")
+        return TokenType::BANG_EQUAL;
+
     return TokenType::UNKNOWN;
 }
 
@@ -34,6 +37,8 @@ TokenType identify_one_len_token(char ch) {
         return TokenType::SLASH;
     case '=':
         return TokenType::EQUAL;
+    case '!':
+        return TokenType::BANG;
     }
     return TokenType::UNKNOWN;
 }
