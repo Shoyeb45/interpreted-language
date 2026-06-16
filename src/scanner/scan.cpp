@@ -12,7 +12,7 @@ TokenType identify_two_len_token(std::string str) {
     else if (str == "<=")
         return TokenType::LESS_EQUAL;
         
-    return TokenType::UNKNOWN;
+    return TokenType::UNKNOWN_CHARACTER;
 }
 
 TokenType identify_one_len_token(char ch) {
@@ -48,20 +48,32 @@ TokenType identify_one_len_token(char ch) {
     case '>':
         return TokenType::GREATER;
     }
-    return TokenType::UNKNOWN;
+    return TokenType::UNKNOWN_CHARACTER;
 }
 
 std::pair<TokenType, int> identify_token(int idx, const std::string &file_content) {
-    TokenType type = TokenType::UNKNOWN;
+    TokenType type = TokenType::UNKNOWN_CHARACTER;
     int add = 1;
 
-    if (idx + 1 < file_content.size()) {
+    // identify string literal
+    if (file_content[idx] == '"') {
+        int j = file_content.find("\"", idx + 1);
+        if (j == std::string::npos) {
+            type = TokenType::STRING_UNTERMINATED;
+            add = file_content.size();
+        } else {
+            add = j - idx + 1;
+            type = TokenType::STRING;
+        }
+    }
+
+    if (idx + 1 < file_content.size() && type == TokenType::UNKNOWN_CHARACTER) {
         type = identify_two_len_token(file_content.substr(idx, 2));
-        add += type != TokenType::UNKNOWN;
+        add += type != TokenType::UNKNOWN_CHARACTER;
     }
     
     // identify one character token
-    if (type == TokenType::UNKNOWN) {
+    if (type == TokenType::UNKNOWN_CHARACTER) {
         type = identify_one_len_token(file_content[idx]);
     }
 
@@ -90,8 +102,9 @@ std::pair<std::vector<std::string>, std::vector<std::string>> scan_file(const st
             const Token token = Token{file_content.substr(i, add), token_type, line};
             i += add;
 
-            if (token_type == TokenType::UNKNOWN) {
-                lexical_errors.push_back(token.to_lexical_error());
+            std::string lexical_err = token.to_lexical_error();
+            if (lexical_err != "") {
+                lexical_errors.push_back(lexical_err);
                 continue;
             }
             tokens.push_back(token.to_string());

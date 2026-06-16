@@ -26,7 +26,13 @@ enum class TokenType {
     BANG_EQUAL,
     LESS_EQUAL,
     GREATER_EQUAL,
-    UNKNOWN
+    
+    // 
+    STRING,
+    STRING_UNTERMINATED,
+    UNKNOWN_CHARACTER
+
+
 };
 
 struct Token {
@@ -42,6 +48,7 @@ struct Token {
 
     std::string to_string() const;
     std::string token_type_to_string() const;
-    std::string token_type_to_symbol() const;
+    std::string token_type_to_lexeme() const;
     std::string to_lexical_error() const;
+    std::string get_literal() const;
 };
