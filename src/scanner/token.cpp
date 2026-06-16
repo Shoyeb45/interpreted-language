@@ -80,6 +80,8 @@ std::string Token::token_type_to_string() const {
         return "GREATER_EQUAL";
     case TokenType::STRING:
         return "STRING";
+    case TokenType::NUMBER:
+        return "NUMBER";
     case TokenType::UNKNOWN_CHARACTER:
     default:
         return "";
@@ -129,16 +131,31 @@ std::string Token::token_type_to_lexeme() const {
     case TokenType::GREATER_EQUAL:
         return ">=";
     case TokenType::STRING:
+    case TokenType::NUMBER:
         return original_token;
     default:
         return "";
     }
 }
 
+std::string normalize_number_literal(const std::string &num) {
+    std::string str_num = std::to_string(std::stod(num));
+
+    while (!str_num.empty() && str_num.back() == '0') {
+        str_num.pop_back();
+    } 
+
+    if (str_num.back() == '.') str_num += "0";
+    return str_num;
+}
+
 std::string Token::get_literal() const {
     switch (type){
     case TokenType::STRING:
         return original_token.substr(1, original_token.size() - 2);
+    case TokenType::NUMBER:
+        return normalize_number_literal(original_token);
     }
     return "null";
 }
+

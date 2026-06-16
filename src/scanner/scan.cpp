@@ -51,9 +51,29 @@ TokenType identify_one_len_token(char ch) {
     return TokenType::UNKNOWN_CHARACTER;
 }
 
+bool is_whitespace_char(char ch) {
+    return ch == ' ' || ch == '\t';
+}
+
+bool isnumber(char ch) {
+    return ch >= '0' && ch <= '9';
+}
+
 std::pair<TokenType, int> identify_token(int idx, const std::string &file_content) {
     TokenType type = TokenType::UNKNOWN_CHARACTER;
     int add = 1;
+
+    // identify number literal
+    if (isnumber(file_content[idx])) {
+        for (int i = idx + 1; i < file_content.size(); i++) {
+            if (isnumber(file_content[i]) || file_content[i] == '.') {
+                add++;
+                continue;
+            }
+            break;
+        }
+        type = TokenType::NUMBER;
+    }
 
     // identify string literal
     if (file_content[idx] == '"') {
@@ -80,7 +100,6 @@ std::pair<TokenType, int> identify_token(int idx, const std::string &file_conten
     return std::make_pair(type, add);
 }
 
-
 std::pair<std::vector<std::string>, std::vector<std::string>> scan_file(const std::vector<std::string> &file_contents) {
     std::vector<std::string> tokens;
     std::vector<std::string> lexical_errors;
@@ -90,7 +109,7 @@ std::pair<std::vector<std::string>, std::vector<std::string>> scan_file(const st
         const std::string &file_content = file_contents[idx];
 
         for (int i = 0; i < file_content.size(); ) {
-            if (file_content[i] == ' ' || file_content[i] == '\t') {
+            if (is_whitespace_char(file_content[i])) {
                 i++;
                 continue;
             }
@@ -98,6 +117,7 @@ std::pair<std::vector<std::string>, std::vector<std::string>> scan_file(const st
             if (i + 1 < file_content.size() && file_content.substr(i, 2) == "//") {
                 break;
             }
+
             auto [token_type, add] = identify_token(i, file_content);
             const Token token = Token{file_content.substr(i, add), token_type, line};
             i += add;

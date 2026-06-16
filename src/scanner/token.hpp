@@ -27,12 +27,14 @@ enum class TokenType {
     LESS_EQUAL,
     GREATER_EQUAL,
     
-    // 
+    // string
     STRING,
     STRING_UNTERMINATED,
+    
+    // number
+    NUMBER,
+    
     UNKNOWN_CHARACTER
-
-
 };
 
 struct Token {
