@@ -85,6 +85,9 @@ std::string Token::token_type_to_string() const {
     case TokenType::IDENTIFIER:
         return "IDENTIFIER";
     case TokenType::RESERVED_WORD:
+    case TokenType::FALSE:
+    case TokenType::TRUE:
+    case TokenType::NIL:
         return reserved_words.at(original_token);
     case TokenType::UNKNOWN_CHARACTER:
     default:
@@ -138,6 +141,9 @@ std::string Token::token_type_to_lexeme() const {
     case TokenType::NUMBER:
     case TokenType::IDENTIFIER:
     case TokenType::RESERVED_WORD:
+    case TokenType::TRUE:
+    case TokenType::FALSE:
+    case TokenType::NIL:
         return original_token;
     default:
         return "";
@@ -149,19 +155,29 @@ std::string normalize_number_literal(const std::string &num) {
 
     while (!str_num.empty() && str_num.back() == '0') {
         str_num.pop_back();
-    } 
+    }
 
-    if (str_num.back() == '.') str_num += "0";
+    if (str_num.back() == '.')
+        str_num += "0";
     return str_num;
 }
 
 std::string Token::get_literal() const {
-    switch (type){
+    switch (type) {
     case TokenType::STRING:
         return original_token.substr(1, original_token.size() - 2);
     case TokenType::NUMBER:
         return normalize_number_literal(original_token);
     }
+
     return "null";
 }
 
+bool Token::is_error() const {
+    switch (type) {
+    case TokenType::STRING_UNTERMINATED:
+    case TokenType::UNKNOWN_CHARACTER:
+        return true;
+    }
+    return false;
+}

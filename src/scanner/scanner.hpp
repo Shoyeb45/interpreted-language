@@ -1,4 +1,11 @@
 #include <string>
 #include <vector>
+#include "token.hpp"
 
-std::pair<std::vector<std::string>, std::vector<std::string>> scan_file(const std::vector<std::string> &file_contents);
+namespace LexicalScanner {
+
+std::vector<Token> scan_file(const std::vector<std::string> &file_contents);
+bool is_lexical_error_present(const std::vector<Token> &tokens);
+void print_lexical_error(const std::vector<Token> &tokens);
+
+};

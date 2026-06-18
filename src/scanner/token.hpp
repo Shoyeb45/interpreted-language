@@ -28,17 +28,19 @@ enum class TokenType {
     LESS_EQUAL,
     GREATER_EQUAL,
     
-    // string
+    // Literals
     STRING,
-    STRING_UNTERMINATED,
-    
-    // number
     NUMBER,
+    TRUE,
+    FALSE,
+    NIL,
     
     IDENTIFIER,
     RESERVED_WORD,
-
-    UNKNOWN_CHARACTER
+    
+    // Error token
+    UNKNOWN_CHARACTER,
+    STRING_UNTERMINATED,
 };
 
 inline const std::unordered_map<std::string, std::string> reserved_words = {
@@ -53,7 +55,8 @@ struct Token {
     std::string literal;
     std::string original_token;
     int line;
-    // int column;
+
+    Token(): type(TokenType::UNKNOWN_CHARACTER) {}
 
     Token(std::string, TokenType, int);
     Token(std::string, TokenType, std::string, std::string, int);
@@ -63,4 +66,10 @@ struct Token {
     std::string token_type_to_lexeme() const;
     std::string to_lexical_error() const;
     std::string get_literal() const;
+    bool is_error() const;
+
+    friend std::ostream& operator<<(std::ostream& os, Token token) {
+        os << token.to_string();
+        return os;
+    }
 };

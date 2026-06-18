@@ -79,15 +79,21 @@ std::pair<TokenType, int> identify_token(int idx, const std::string &file_conten
             }
             break;
         }
-        std::cerr << "identifier " << word << "\n";
         if (reserved_words.find(word) != reserved_words.end()) {
             type = TokenType::RESERVED_WORD;
+            if (word == "true") {
+                type = TokenType::TRUE;
+            } else if (word == "false") {
+                type = TokenType::FALSE;
+            } else if (word == "nil") {
+                type = TokenType::NIL;
+            }
         } else {
             type = TokenType::IDENTIFIER;
         }
     }
 
-    // identify number literal and reserved word
+    // identify number literal
     if (isnumber(file_content[idx])) {
 
         for (int i = idx + 1; i < file_content.size(); i++) {
@@ -125,8 +131,9 @@ std::pair<TokenType, int> identify_token(int idx, const std::string &file_conten
     return std::make_pair(type, add);
 }
 
-std::pair<std::vector<std::string>, std::vector<std::string>> scan_file(const std::vector<std::string> &file_contents) {
-    std::vector<std::string> tokens;
+std::vector<Token> LexicalScanner::scan_file(const std::vector<std::string> &file_contents) {
+    // std::vector<std::string> tokens;
+    std::vector<Token> tokens;
     std::vector<std::string> lexical_errors;
 
     for (int idx = 0; idx < file_contents.size(); idx++) {
@@ -147,16 +154,31 @@ std::pair<std::vector<std::string>, std::vector<std::string>> scan_file(const st
             const Token token = Token{file_content.substr(i, add), token_type, line};
             i += add;
 
-            std::string lexical_err = token.to_lexical_error();
-            if (lexical_err != "") {
-                lexical_errors.push_back(lexical_err);
-                continue;
-            }
-            tokens.push_back(token.to_string());
+            // std::string lexical_err = token.to_lexical_error();
+            // if (lexical_err != "") {
+            //     lexical_errors.push_back(lexical_err);
+            //     continue;
+            // }
+            tokens.push_back(token);
         }
     }
 
     // EOF file token
-    tokens.push_back(Token{"", TokenType::END_OF_FILE, file_contents.size()}.to_string());
-    return std::make_pair(tokens, lexical_errors);
+    tokens.push_back(Token{"", TokenType::END_OF_FILE, (int) file_contents.size()});
+    return tokens;
+}
+
+bool LexicalScanner::is_lexical_error_present(const std::vector<Token> &tokens) {
+    for (const Token token: tokens) {
+        if (token.is_error()) return true;
+    }
+    return false;
+}
+
+void LexicalScanner::print_lexical_error(const std::vector<Token> &tokens) {
+     for (const Token token: tokens) {
+        if (token.is_error()) {
+            std::cerr << token.to_lexical_error() << "\n";
+        }
+    }
 }
