@@ -1,5 +1,5 @@
 #include "parser.hpp"
-
+#include "../core/utils.hpp"
 #include <iostream>
 
 Token Parser::peek() {
@@ -89,8 +89,9 @@ ASTNode *Parser::term() {
     return expr;
 }
 
-void Parser::visualize(ASTNode *node) {
-    if (!node)
+void Parser::visualize() {
+    if (!root)
         return;
-    node->visualize();
+    std::string ast = root->visualize();
+    std::cout << trim(ast) << "\n";
 }

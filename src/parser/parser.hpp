@@ -36,8 +36,5 @@ struct Parser {
     ASTNode *parse() {
         return root = expression();
     }
-    void visualize() {
-        this->visualize(root);
-        std::cout << "\n";
-    }
+    void visualize();
 };

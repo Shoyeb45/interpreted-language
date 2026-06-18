@@ -10,7 +10,7 @@ struct ASTNode {
     NodeType type;
     virtual ~ASTNode() = default;
 
-    virtual void visualize() = 0;
+    virtual std::string visualize() = 0;
 };
 
 // Number, false, true, null, string literals
@@ -22,11 +22,11 @@ struct Literal : ASTNode {
         this->type = NodeType::LITERAL;
     }
 
-    void visualize() override {
+    std::string visualize() override {
         if (token.type == TokenType::NUMBER) {
-            std::cout << " " << token.get_literal();
+            return " " + token.get_literal();
         } else {
-            std::cout << token.lexeme;
+            return " " + token.lexeme;
         }
     }
 };
@@ -43,12 +43,12 @@ struct Binary : ASTNode {
         this->type = NodeType::BINARY;
     }
     
-    void visualize() override {
-        std::cout << " (" << this->operation.lexeme;
+    std::string visualize() override {
+        std::string visulz =  " (" + this->operation.lexeme;
 
-        this->left->visualize();
-        this->right->visualize();
-        std::cout << ")";
+        visulz += this->left->visualize();
+        visulz += this->right->visualize();
+        return visulz + ")";
     }
 };
 
@@ -60,9 +60,9 @@ struct Group : ASTNode {
         this->ast_node = ast_node;
     }
 
-    void visualize() override {
-        std::cout << " (group";
-        this->ast_node->visualize();
-        std::cout << ")";
+    std::string visualize() override {
+        std::string visulz = " (group";
+        visulz += this->ast_node->visualize();
+        return visulz + ")";
     }
 };
