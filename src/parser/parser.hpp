@@ -26,9 +26,7 @@ struct Parser {
     ASTNode *factor();
     ASTNode *primary();
 
-    void visualize(ASTNode *node);
-
-  public:
+public:
     Parser(std::vector<Token> &tokens) {
         this->tokens = tokens;
     }

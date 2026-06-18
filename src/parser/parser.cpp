@@ -41,7 +41,8 @@ ASTNode *Parser::expression() {
 }
 
 ASTNode *Parser::primary() {
-    if (check(TokenType::NUMBER) || check(TokenType::TRUE) || check(TokenType::FALSE) || check(TokenType::NIL)) {
+    if (check(TokenType::NUMBER) || check(TokenType::TRUE) || check(TokenType::FALSE) || check(TokenType::NIL) ||
+        check(TokenType::STRING)) {
         return new Literal(advance());
     }
 

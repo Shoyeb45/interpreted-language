@@ -23,7 +23,7 @@ struct Literal : ASTNode {
     }
 
     std::string visualize() override {
-        if (token.type == TokenType::NUMBER) {
+        if (token.type == TokenType::NUMBER || token.type == TokenType::STRING) {
             return " " + token.get_literal();
         } else {
             return " " + token.lexeme;
