@@ -65,16 +65,27 @@ ASTNode *Parser::primary() {
 }
 
 ASTNode *Parser::factor() {
-    ASTNode *expr = primary();
+    ASTNode *expr = unary();
 
     while (check(TokenType::STAR) || check(TokenType::SLASH)) {
         Token op = advance();
-        ASTNode *right = primary();
+        ASTNode *right = unary();
 
         expr = new Binary(expr, right, op);
     }
 
     return expr;
+}
+
+ASTNode *Parser::unary() {
+    if (check(TokenType::MINUS) || check(TokenType::BANG)) {
+        Token op = advance();
+        ASTNode *right = unary();
+
+        return new Unary(op, right);
+    }
+
+    return primary();
 }
 
 ASTNode *Parser::term() {

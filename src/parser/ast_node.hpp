@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-enum NodeType { LITERAL, BINARY, GROUP };
+enum NodeType { LITERAL, BINARY, GROUP, UNARY };
 
 struct ASTNode {
     NodeType type;
@@ -63,6 +63,23 @@ struct Group : ASTNode {
     std::string visualize() override {
         std::string visulz = " (group";
         visulz += this->ast_node->visualize();
+        return visulz + ")";
+    }
+};
+
+struct Unary : ASTNode {
+    Token token;
+    ASTNode* child;
+
+    Unary(Token op, ASTNode *child) {
+        this->type = NodeType::UNARY;
+        this->child = child;
+        this->token = op;
+    }
+
+    std::string visualize() override {
+        std::string visulz = " (" + token.lexeme;
+        visulz += this->child->visualize();
         return visulz + ")";
     }
 };

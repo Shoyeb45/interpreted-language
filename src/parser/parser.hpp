@@ -25,6 +25,7 @@ struct Parser {
     ASTNode *term();
     ASTNode *factor();
     ASTNode *primary();
+    ASTNode *unary();
 
 public:
     Parser(std::vector<Token> &tokens) {
