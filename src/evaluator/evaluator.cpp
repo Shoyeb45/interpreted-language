@@ -59,6 +59,9 @@ RuntimeValue Evaluator::perform_binary_opration(Binary *binary_node) {
         }
         case TokenType::PLUS: {
             // string concatenation
+            if (is_string(left_val) && is_string(right_val)) {
+                return std::get<std::string>(left_val) + std::get<std::string>(right_val); 
+            }
             double left = std::get<double>(left_val), right = std::get<double>(right_val);
             return left + right;
         }
