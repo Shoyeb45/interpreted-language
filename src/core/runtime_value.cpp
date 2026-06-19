@@ -11,11 +11,14 @@ bool is_string(RuntimeValue &value) {
 }
 
 bool is_truthy(RuntimeValue &value) {
-
     if (std::holds_alternative<bool>(value)) {
         return std::get<bool>(value);
     }
     return true;
+}
+
+bool is_bool(RuntimeValue &value) {
+    return is_true(value) || is_false(value);
 }
 
 bool is_nil(RuntimeValue &value) {

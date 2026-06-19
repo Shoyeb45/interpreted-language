@@ -22,9 +22,40 @@ std::string Evaluator::evaluate() {
     return "";
 }
 
+
 RuntimeValue Evaluator::perform_binary_opration(Binary *binary_node) {
     RuntimeValue left_val = evaluate(binary_node->left);
     RuntimeValue right_val = evaluate(binary_node->right);
+
+    switch (binary_node->operation.type) {
+        case TokenType::STAR: {
+            if (is_string(left_val) || is_string(right_val)) {
+                // error
+                return nullptr;
+            }
+            double left = std::get<double>(left_val), right = std::get<double>(right_val);
+            return left * right;
+        }
+        case TokenType::SLASH: {
+            if (is_string(left_val) || is_string(right_val)) {
+                // error
+                return nullptr;
+            }
+            double left = std::get<double>(left_val), right = std::get<double>(right_val);
+            if ((int) right == 0) {
+                // error and improve comparison
+                return nullptr;
+            }
+            return left / right;
+
+        }
+        case TokenType::MINUS: {
+            
+        }
+        case TokenType::PLUS: {
+
+        }
+    }
     return nullptr;
 }
 

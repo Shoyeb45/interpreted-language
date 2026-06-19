@@ -11,3 +11,4 @@ bool is_nil(RuntimeValue &value);
 bool is_truthy(RuntimeValue &value);
 bool is_true(RuntimeValue &value);
 bool is_false(RuntimeValue &value);
+bool is_bool(RuntimeValue &value);
