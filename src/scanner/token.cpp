@@ -189,3 +189,7 @@ RuntimeValue Token::get_runtime_value() {
         // throw std::runtime_error("Token cannot be converted to RuntimeValue");
     }
 }
+
+std::string Token::construct_err_message(const std::string message) const {
+    return "[line " + std::to_string(line) + "] " + message;
+}

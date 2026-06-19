@@ -67,6 +67,7 @@ struct Token {
     std::string token_type_to_string() const;
     std::string token_type_to_lexeme() const;
     std::string to_lexical_error() const;
+    std::string construct_err_message(const std::string message) const;
     std::string get_literal() const;
     bool is_error() const;
 

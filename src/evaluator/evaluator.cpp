@@ -28,28 +28,28 @@ RuntimeValue Evaluator::perform_binary_opration(Binary *binary_node) {
 
     switch (binary_node->operation.type) {
     case TokenType::STAR: {
-        if (is_string(left_val) || is_string(right_val)) {
-            // error
+        if (is_string(left_val) || is_string(right_val) || is_bool(right_val) || is_bool(left_val)) {
+            errors.push_back(binary_node->operation.construct_err_message("Multiplication operand can't be string"));
             return nullptr;
         }
         double left = std::get<double>(left_val), right = std::get<double>(right_val);
         return left * right;
     }
     case TokenType::SLASH: {
-        if (is_string(left_val) || is_string(right_val)) {
-            // error
+        if (is_string(left_val) || is_string(right_val) || is_bool(right_val) || is_bool(left_val)) {
+            errors.push_back(binary_node->operation.construct_err_message("Division operand can't be string "));
             return nullptr;
         }
         double left = std::get<double>(left_val), right = std::get<double>(right_val);
         if ((int)right == 0) {
-            // error and improve comparison
+            errors.push_back(binary_node->operation.construct_err_message("Division can't be performed by 0"));
             return nullptr;
         }
         return left / right;
     }
     case TokenType::MINUS: {
         if (is_string(left_val) || is_string(right_val)) {
-            // error
+            errors.push_back(binary_node->operation.construct_err_message("Subtraction operand can't be string: "));
             return nullptr;
         }
         double left = std::get<double>(left_val), right = std::get<double>(right_val);
@@ -65,7 +65,7 @@ RuntimeValue Evaluator::perform_binary_opration(Binary *binary_node) {
     }
     case TokenType::LESS: {
         if (is_string(left_val) || is_string(right_val)) {
-            // error
+            errors.push_back(binary_node->operation.construct_err_message("String values can't be compared"));
             return nullptr;
         }
         double left = std::get<double>(left_val), right = std::get<double>(right_val);
@@ -73,7 +73,7 @@ RuntimeValue Evaluator::perform_binary_opration(Binary *binary_node) {
     }
     case TokenType::LESS_EQUAL: {
         if (is_string(left_val) || is_string(right_val)) {
-            // error
+            errors.push_back(binary_node->operation.construct_err_message("String values can't be compared"));
             return nullptr;
         }
         double left = std::get<double>(left_val), right = std::get<double>(right_val);
@@ -81,7 +81,7 @@ RuntimeValue Evaluator::perform_binary_opration(Binary *binary_node) {
     }
     case TokenType::GREATER: {
         if (is_string(left_val) || is_string(right_val)) {
-            // error
+            errors.push_back(binary_node->operation.construct_err_message("String values can't be compared"));
             return nullptr;
         }
         double left = std::get<double>(left_val), right = std::get<double>(right_val);
@@ -89,7 +89,7 @@ RuntimeValue Evaluator::perform_binary_opration(Binary *binary_node) {
     }
     case TokenType::GREATER_EQUAL: {
         if (is_string(left_val) || is_string(right_val)) {
-            // error
+            errors.push_back(binary_node->operation.construct_err_message("String values can't be compared"));
             return nullptr;
         }
         double left = std::get<double>(left_val), right = std::get<double>(right_val);
@@ -102,6 +102,8 @@ RuntimeValue Evaluator::perform_binary_opration(Binary *binary_node) {
         return left_val != right_val;
     }
     }
+    errors.push_back(
+        binary_node->operation.construct_err_message("Unexpected operation " + binary_node->operation.lexeme));
     return nullptr;
 }
 
@@ -117,7 +119,8 @@ RuntimeValue Evaluator::perform_unary_operation(Unary *unary_node) {
         if (is_nil(val))
             return true;
 
-        errors.push_back("[line " + std::to_string(unary_node->token.line) + "] Expected operands 'true', 'false' or 'nil'");
+        errors.push_back("[line " + std::to_string(unary_node->token.line) +
+                         "] Expected operands 'true', 'false' or 'nil'");
         return nullptr;
     }
     case TokenType::MINUS:
@@ -130,7 +133,6 @@ RuntimeValue Evaluator::perform_unary_operation(Unary *unary_node) {
 
     errors.push_back("[line " + std::to_string(unary_node->token.line) +
                      "] Unknown operand. Expected 'number', 'nil', 'true' or 'false'");
-    // potential error handling
     return nullptr;
 }
 
