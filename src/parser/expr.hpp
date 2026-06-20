@@ -6,15 +6,15 @@
 
 enum NodeType { LITERAL, BINARY, GROUP, UNARY };
 
-struct ASTNode {
+struct Expr {
     NodeType type;
-    virtual ~ASTNode() = default;
+    virtual ~Expr() = default;
 
     virtual std::string visualize() = 0;
 };
 
 // Number, false, true, null, string literals
-struct Literal : ASTNode {
+struct Literal : Expr {
     Token token;
 
     Literal(Token token) {
@@ -31,12 +31,12 @@ struct Literal : ASTNode {
     }
 };
 
-struct Binary : ASTNode {
-    ASTNode *left;
-    ASTNode *right;
+struct Binary : Expr {
+    Expr *left;
+    Expr *right;
     Token operation;
 
-    Binary(ASTNode *left, ASTNode *right, Token op) {
+    Binary(Expr *left, Expr *right, Token op) {
         this->left = left;
         this->right = right;
         this->operation = op;
@@ -52,10 +52,10 @@ struct Binary : ASTNode {
     }
 };
 
-struct Group : ASTNode {
-    ASTNode *ast_node;
+struct Group : Expr {
+    Expr *ast_node;
 
-    Group(ASTNode *ast_node) {
+    Group(Expr *ast_node) {
         this->type = NodeType::GROUP;
         this->ast_node = ast_node;
     }
@@ -67,11 +67,11 @@ struct Group : ASTNode {
     }
 };
 
-struct Unary : ASTNode {
+struct Unary : Expr {
     Token token;
-    ASTNode* child;
+    Expr* child;
 
-    Unary(Token op, ASTNode *child) {
+    Unary(Token op, Expr *child) {
         this->type = NodeType::UNARY;
         this->child = child;
         this->token = op;

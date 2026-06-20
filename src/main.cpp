@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
             parser->report_error();
             std::exit(65);
         }
-        ASTNode *root = parser->parse();
+        Expr *root = parser->parse();
         
         Evaluator *evaluator = new Evaluator(root);
         std::string evaluation_result = evaluator->evaluate();

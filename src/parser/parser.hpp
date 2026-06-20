@@ -1,12 +1,12 @@
 #pragma once
-#include "ast_node.hpp"
+#include "expr.hpp"
 #include <string>
 #include <vector>
 
 struct Parser {
     std::vector<Token> tokens;
     std::vector<std::string> errors;
-    ASTNode *root;
+    Expr *root;
     int curr_index = 0;
 
     // helper methods
@@ -22,20 +22,20 @@ struct Parser {
 
     bool match(TokenType type);
     bool check(TokenType type);
-    ASTNode *expression();
-    ASTNode *term();
-    ASTNode *factor();
-    ASTNode *primary();
-    ASTNode *unary();
-    ASTNode *comparison();
-    ASTNode *equality();
+    Expr *expression();
+    Expr *term();
+    Expr *factor();
+    Expr *primary();
+    Expr *unary();
+    Expr *comparison();
+    Expr *equality();
 
 public:
     Parser(std::vector<Token> &tokens) {
         this->tokens = tokens;
     }
 
-    ASTNode *parse() {
+    Expr *parse() {
         return root = expression();
     }
     void visualize();

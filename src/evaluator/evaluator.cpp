@@ -148,7 +148,7 @@ RuntimeValue Evaluator::perform_unary_operation(Unary *unary_node) {
     return nullptr;
 }
 
-RuntimeValue Evaluator::evaluate(ASTNode *node) {
+RuntimeValue Evaluator::evaluate(Expr *node) {
     if (!node)
         return nullptr;
 

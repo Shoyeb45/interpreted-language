@@ -37,11 +37,11 @@ bool Parser::match(TokenType type) {
     return false;
 }
 
-ASTNode *Parser::expression() {
+Expr *Parser::expression() {
     return equality();
 }
 
-ASTNode *Parser::primary() {
+Expr *Parser::primary() {
     if (check(TokenType::NUMBER) || check(TokenType::TRUE) || check(TokenType::FALSE) || check(TokenType::NIL) ||
         check(TokenType::STRING)) {
         return new Literal(advance());
@@ -52,12 +52,12 @@ ASTNode *Parser::primary() {
         // create new one for inside of this brackets
 
         // create node for the group
-        ASTNode *expr = expression();
+        Expr *expr = expression();
         if (!expr) {
             std::cerr << "error" << "\n";
             return nullptr;
         }
-        ASTNode *grp_node = new Group(expr);
+        Expr *grp_node = new Group(expr);
 
         if (!match(TokenType::RIGHT_PAREN)) {
             std::cerr << "Expected ')'\n";
@@ -70,12 +70,12 @@ ASTNode *Parser::primary() {
     return nullptr;
 }
 
-ASTNode *Parser::factor() {
-    ASTNode *expr = unary();
+Expr *Parser::factor() {
+    Expr *expr = unary();
 
     while (check(TokenType::STAR) || check(TokenType::SLASH)) {
         Token op = advance();
-        ASTNode *right = unary();
+        Expr *right = unary();
 
         expr = new Binary(expr, right, op);
     }
@@ -83,10 +83,10 @@ ASTNode *Parser::factor() {
     return expr;
 }
 
-ASTNode *Parser::unary() {
+Expr *Parser::unary() {
     if (check(TokenType::MINUS) || check(TokenType::BANG)) {
         Token op = advance();
-        ASTNode *right = unary();
+        Expr *right = unary();
 
         return new Unary(op, right);
     }
@@ -94,13 +94,13 @@ ASTNode *Parser::unary() {
     return primary();
 }
 
-ASTNode *Parser::comparison() {
-    ASTNode *expr = term();
+Expr *Parser::comparison() {
+    Expr *expr = term();
 
     while (check(TokenType::LESS) || check(TokenType::LESS_EQUAL) || check(TokenType::GREATER) ||
            check(TokenType::GREATER_EQUAL)) {
         Token op = advance();
-        ASTNode *right = term();
+        Expr *right = term();
 
         expr = new Binary(expr, right, op);
     }
@@ -108,12 +108,12 @@ ASTNode *Parser::comparison() {
     return expr;
 }
 
-ASTNode *Parser::equality() {
-    ASTNode *expr = comparison();
+Expr *Parser::equality() {
+    Expr *expr = comparison();
 
     while (check(TokenType::EQUAL_EQUAL) || check(TokenType::BANG_EQUAL)) {
         Token op = advance();
-        ASTNode *right = comparison();
+        Expr *right = comparison();
 
         expr = new Binary(expr, right, op);
     }
@@ -121,12 +121,12 @@ ASTNode *Parser::equality() {
     return expr;
 }
 
-ASTNode *Parser::term() {
-    ASTNode *expr = factor();
+Expr *Parser::term() {
+    Expr *expr = factor();
 
     while (check(TokenType::PLUS) || check(TokenType::MINUS)) {
         Token op = advance();
-        ASTNode *right = factor();
+        Expr *right = factor();
 
         expr = new Binary(expr, right, op);
     }
