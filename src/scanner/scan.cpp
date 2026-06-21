@@ -87,6 +87,8 @@ std::pair<TokenType, int> identify_token(int idx, const std::string &file_conten
                 type = TokenType::FALSE;
             } else if (word == "nil") {
                 type = TokenType::NIL;
+            } else if (word == "print") {
+                type = TokenType::PRINT;
             }
         } else {
             type = TokenType::IDENTIFIER;

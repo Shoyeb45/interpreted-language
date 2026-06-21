@@ -87,6 +87,7 @@ std::string Token::token_type_to_string() const {
         return "IDENTIFIER";
     case TokenType::RESERVED_WORD:
     case TokenType::FALSE:
+    case TokenType::PRINT:
     case TokenType::TRUE:
     case TokenType::NIL:
         return reserved_words.at(original_token);
@@ -145,6 +146,7 @@ std::string Token::token_type_to_lexeme() const {
     case TokenType::TRUE:
     case TokenType::FALSE:
     case TokenType::NIL:
+    case TokenType::PRINT:
         return original_token;
     default:
         return "";

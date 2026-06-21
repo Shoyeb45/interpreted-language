@@ -37,6 +37,7 @@ enum class TokenType {
     FALSE,
     NIL,
 
+    PRINT,
     IDENTIFIER,
     RESERVED_WORD,
 

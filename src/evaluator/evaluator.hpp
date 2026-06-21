@@ -17,4 +17,7 @@ struct Evaluator {
 
 public:
     std::string evaluate();
+    void set_root(Expr *root) {
+        this->root = root;
+    }
 };

@@ -135,8 +135,12 @@ Expr *Parser::term() {
 }
 
 void Parser::visualize() {
-    if (!root)
+    if (!root) {
+        for (Stmt* stmt : statements) {
+            std::cout << trim(stmt->visualize()) << "\n"; 
+        }
         return;
+    }
     std::string ast = root->visualize();
     std::cout << trim(ast) << "\n";
 }
@@ -147,4 +151,32 @@ void Parser::report_error() {
     for (int i = 0; i < errors.size(); i++) {
         std::cerr << errors[i] << "\n";
     }
+}
+
+std::vector<Stmt *> Parser::parse_stmt() {
+    while (!is_at_end()) {
+        statements.push_back(statement());
+    }
+    return statements;
+}
+
+Stmt* Parser::expressionStmt() {
+    Expr* expr = expression();
+    return new ExprStmt(expr);
+}
+
+Stmt* Parser::prntStmt() {
+    Expr *expr = expression();
+    if (match(TokenType::SEMICOLON)) {
+        return new PrintStmt(expr);
+    }
+    errors.push_back("Expected ;");
+    return nullptr;
+}
+
+Stmt* Parser::statement() {
+    if (match(TokenType::PRINT)) {
+        return prntStmt();
+    }
+    return expressionStmt();
 }

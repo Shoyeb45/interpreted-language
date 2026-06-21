@@ -1,10 +1,9 @@
 #pragma once
 
 #include "../scanner/token.hpp"
+#include "node_types.hpp"
 #include <iostream>
 #include <string>
-
-enum NodeType { LITERAL, BINARY, GROUP, UNARY };
 
 struct Expr {
     NodeType type;

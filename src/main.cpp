@@ -7,10 +7,21 @@
 
 // custom headers
 #include "core/utils.hpp"
-#include "scanner/scanner.hpp"
-#include "parser/parser.hpp"
 #include "evaluator/evaluator.hpp"
+#include "parser/parser.hpp"
+#include "scanner/scanner.hpp"
+#include "executor/executor.hpp"
 
+std::vector<Token> scan(std::vector<std::string> &file_contents) {
+    auto tokens = LexicalScanner::scan_file(file_contents);
+
+    if (LexicalScanner::is_lexical_error_present(tokens)) {
+        LexicalScanner::print_lexical_error(tokens);
+        std::exit(65);
+    }
+
+    return tokens;
+}
 
 int main(int argc, char *argv[]) {
     std::cout << std::unitbuf;
@@ -25,12 +36,12 @@ int main(int argc, char *argv[]) {
 
     const std::string command = argv[1];
     std::vector<std::string> file_contents = read_file_contents(argv[2]);
-    
+
     if (command == "tokenize") {
         std::vector<Token> tokens = LexicalScanner::scan_file(file_contents);
 
         bool is_error = false;
-        for (auto &token: tokens) {
+        for (auto &token : tokens) {
             if (token.is_error()) {
                 std::cerr << token.to_lexical_error() << "\n";
                 is_error = true;
@@ -38,18 +49,13 @@ int main(int argc, char *argv[]) {
             }
             std::cout << token << "\n";
         }
-        
+
         if (is_error) {
             std::exit(65);
         }
     } else if (command == "parse") {
-        auto tokens = LexicalScanner::scan_file(file_contents);
-        if (LexicalScanner::is_lexical_error_present(tokens)) {
-            std::cerr << "Lexical errors found\n";
-            LexicalScanner::print_lexical_error(tokens);
-            std::exit(65);
-        }
-
+        auto tokens = scan(file_contents);
+        
         Parser *parser = new Parser(tokens);
         parser->parse();
 
@@ -57,7 +63,7 @@ int main(int argc, char *argv[]) {
             parser->report_error();
             std::exit(65);
         } else {
-            parser->visualize();    
+            parser->visualize();
         }
 
     } else if (command == "evaluate") {
@@ -75,7 +81,7 @@ int main(int argc, char *argv[]) {
             std::exit(65);
         }
         Expr *root = parser->parse();
-        
+
         Evaluator *evaluator = new Evaluator(root);
         std::string evaluation_result = evaluator->evaluate();
 
@@ -85,6 +91,19 @@ int main(int argc, char *argv[]) {
             std::exit(70);
         }
         std::cout << evaluation_result << "\n";
+    } else if (command == "run") {
+        auto tokens = scan(file_contents);
+        Parser* parser = new Parser(tokens);
+
+        std::vector<Stmt *> stmts = parser->parse_stmt();
+        if (parser->is_error()) {
+            parser->report_error();
+            std::exit(65);
+        }
+        // parser->visualize();
+
+        Executor *executor = new Executor(stmts);
+        executor->execute();
     } else {
         std::cerr << "Unknown command: " << command << std::endl;
         return 1;
