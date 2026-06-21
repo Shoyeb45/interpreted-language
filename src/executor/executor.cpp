@@ -3,12 +3,22 @@
 
 std::string Executor::executeExprStmt(ExprStmt *stmt) {
     evaluator->set_root(stmt->expr);
-    return evaluator->evaluate();
+    std::string result = evaluator->evaluate();
+    if (evaluator->errors.size() > 0) {
+        evaluator->report_error();
+        std::exit(70);
+    }
+    return "";
 }
 
 std::string Executor::executePrntStmt(PrintStmt *prntStmt) {
     evaluator->set_root(prntStmt->expr);
-    return evaluator->evaluate();
+    std::string result = evaluator->evaluate();
+    if (evaluator->errors.size() > 0) {
+        evaluator->report_error();
+        std::exit(70);
+    }  
+    return result;
 }
 
 std::string Executor::executeStmt(Stmt *stmt) {
@@ -20,11 +30,13 @@ std::string Executor::executeStmt(Stmt *stmt) {
         return executePrntStmt(static_cast<PrintStmt *>(stmt));
     }
     }
-    // error
+    return "";
 }
 
 void Executor::execute() {
+    std::string output = "";
     for (Stmt* stmt : statements) {
-        std::cout << executeStmt(stmt) << "\n";
+        output = executeStmt(stmt);
+        std::cout << (output != "" ? output + "\n": "");
     }
 }

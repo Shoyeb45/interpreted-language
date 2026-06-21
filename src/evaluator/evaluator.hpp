@@ -14,7 +14,7 @@ struct Evaluator {
     RuntimeValue perform_binary_opration(Binary* binary_node);
     RuntimeValue perform_unary_operation(Unary *unary_node);
     void push_error(std::string message, Token &token);
-
+    void report_error();
 public:
     std::string evaluate();
     void set_root(Expr *root) {

@@ -2,6 +2,8 @@
 #include "../core/runtime_value.hpp"
 #include "../core/utils.hpp"
 #include <string>
+#include <iostream>
+
 
 std::string Evaluator::evaluate() {
     if (!root)
@@ -164,4 +166,10 @@ RuntimeValue Evaluator::evaluate(Expr *node) {
     }
     };
     return nullptr;
+}
+
+void Evaluator::report_error() {
+    for (auto &err : errors) {
+        std::cerr << err << "\n";
+    }
 }

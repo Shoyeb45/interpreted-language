@@ -63,6 +63,7 @@ Expr *Parser::primary() {
             std::cerr << "Expected ')'\n";
             return nullptr;
         }
+        // advance();
         return grp_node;
     }
 
@@ -162,7 +163,13 @@ std::vector<Stmt *> Parser::parse_stmt() {
 
 Stmt* Parser::expressionStmt() {
     Expr* expr = expression();
-    return new ExprStmt(expr);
+    if (match(TokenType::SEMICOLON)) {
+        return new ExprStmt(expr);
+    }
+    std::cout << peek() << "\n";
+    // error
+    errors.push_back("Expected ;");
+    return nullptr;
 }
 
 Stmt* Parser::prntStmt() {
@@ -170,6 +177,7 @@ Stmt* Parser::prntStmt() {
     if (match(TokenType::SEMICOLON)) {
         return new PrintStmt(expr);
     }
+    std::cout << peek() << "\n";
     errors.push_back("Expected ;");
     return nullptr;
 }
