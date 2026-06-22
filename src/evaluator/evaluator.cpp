@@ -165,7 +165,12 @@ RuntimeValue Evaluator::evaluate(Expr *node) {
     }
     case NodeType::VARIABLE: {
         Variable *var = static_cast<Variable *>(node);
-        return global->get(var->identifier.lexeme);
+        if (global->exists(var->identifier.lexeme)) {
+            return global->get(var->identifier.lexeme);
+        }
+        errors.push_back(var->identifier.construct_err_message("Undeclared variable: " + var->identifier.lexeme));
+        // std::exit(70);
+        return nullptr;
     }
     };
     return nullptr;

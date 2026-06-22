@@ -3,6 +3,7 @@
 #include "../core/runtime_value.hpp"
 #include <string>
 #include <unordered_map>
+#include <iostream>
 
 struct EnvironmentTable {
   private:
@@ -13,11 +14,15 @@ struct EnvironmentTable {
         table[name] = value;
     }
 
+    bool exists(std::string &name) {
+        return table.find(name) != table.end();
+    }
+
     RuntimeValue get(std::string &name) {
-        if (table.contains(name)) {
+        if (exists(name)) {
             return table[name];
         }
-        // error handle
-        return nullptr;
+        std::cerr << "Undeclared variable: " << name << "\n";
+        std::exit(70);
     }
 };

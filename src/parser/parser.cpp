@@ -67,7 +67,7 @@ Expr *Parser::primary() {
         Expr *grp_node = new Group(expr);
 
         if (!match(TokenType::RIGHT_PAREN)) {
-            errors.push_back("Expected ')'");
+            errors.push_back(peek().construct_err_message("Expected ')'"));
             return nullptr;
         }
         return grp_node;
@@ -176,7 +176,7 @@ Stmt *Parser::var_stmt() {
     consume(TokenType::EQUAL, "Expected assignment operator '='");
 
     Expr *expr = expression();
-    consume(TokenType::SEMICOLON, "Expected ;");
+    consume(TokenType::SEMICOLON, previous().construct_err_message("Expected ;"));
     return new VariableStmt(expr, identifier);
 }
 
@@ -187,7 +187,7 @@ Stmt *Parser::expression_stmt() {
     }
 
     // error
-    errors.push_back("Expected ;");
+    errors.push_back(previous().construct_err_message("Expected ;"));
     return nullptr;
 }
 
@@ -196,7 +196,7 @@ Stmt *Parser::prnt_stmt() {
     if (match(TokenType::SEMICOLON)) {
         return new PrintStmt(expr);
     }
-    errors.push_back("Expected ;");
+    errors.push_back(previous().construct_err_message("Expected ;"));
     return nullptr;
 }
 
