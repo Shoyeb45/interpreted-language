@@ -173,9 +173,14 @@ std::vector<Stmt *> Parser::parse_stmt() {
 
 Stmt *Parser::var_stmt() {
     Token identifier = consume(TokenType::IDENTIFIER, "Expected name of the variable");
-    consume(TokenType::EQUAL, "Expected assignment operator '='");
-
-    Expr *expr = expression();
+    
+    Expr *expr;
+    if (match(TokenType::EQUAL)) {
+        expr = expression();
+    } else {
+        expr = new Literal(Token{"nil", TokenType::NIL, -1});
+    }
+    
     consume(TokenType::SEMICOLON, previous().construct_err_message("Expected ;"));
     return new VariableStmt(expr, identifier);
 }
