@@ -8,5 +8,6 @@ enum NodeType {
     VARIABLE,
     PRINT_STMT, 
     EXPR_STMT,
-    VARIABLE_STMT
+    VARIABLE_STMT,
+    ASSIGN,
 };

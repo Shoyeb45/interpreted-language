@@ -36,6 +36,7 @@ struct Parser {
     Expr *unary();
     Expr *comparison();
     Expr *equality();
+    Expr *assignment();
     Stmt *expression_stmt();
     Stmt *statement();
     Stmt *prnt_stmt();

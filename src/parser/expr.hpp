@@ -41,12 +41,12 @@ struct Binary : Expr {
         this->operation = op;
         this->type = NodeType::BINARY;
     }
-    
-    std::string visualize() override {
-        std::string visulz =  " (" + this->operation.lexeme;
 
-        visulz += left ? left->visualize(): "";
-        visulz += right ? right->visualize(): "";
+    std::string visualize() override {
+        std::string visulz = " (" + this->operation.lexeme;
+
+        visulz += left ? left->visualize() : "";
+        visulz += right ? right->visualize() : "";
         return visulz + ")";
     }
 };
@@ -61,14 +61,14 @@ struct Group : Expr {
 
     std::string visualize() override {
         std::string visulz = " (group";
-        visulz += ast_node ? ast_node->visualize(): "";
+        visulz += ast_node ? ast_node->visualize() : "";
         return visulz + ")";
     }
 };
 
 struct Unary : Expr {
     Token token;
-    Expr* child;
+    Expr *child;
 
     Unary(Token op, Expr *child) {
         this->type = NodeType::UNARY;
@@ -78,12 +78,12 @@ struct Unary : Expr {
 
     std::string visualize() override {
         std::string visulz = " (" + token.lexeme;
-        visulz += child ? child->visualize(): "";
+        visulz += child ? child->visualize() : "";
         return visulz + ")";
     }
 };
 
-struct Variable: Expr {
+struct Variable : Expr {
     Token identifier;
     Variable(Token identifier) {
         this->identifier = identifier;
@@ -93,5 +93,20 @@ struct Variable: Expr {
     std::string visualize() override {
         std::string visz = " variable: " + identifier.lexeme;
         return visz;
+    }
+};
+
+struct Assign : Expr {
+    Token identifier;
+    Expr *value;
+    
+    Assign(Token identifier, Expr *value) {
+        this->identifier = identifier;
+        this->value = value;
+        type = NodeType::ASSIGN;
+    }
+
+    std::string visualize() override {
+        return "Assign " + identifier.lexeme + " " + (value ? value->visualize() : "");
     }
 };

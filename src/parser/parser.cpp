@@ -45,7 +45,7 @@ Token Parser::consume(TokenType type, std::string message) {
 }
 
 Expr *Parser::expression() {
-    return equality();
+    return assignment();
 }
 
 Expr *Parser::primary() {
@@ -77,7 +77,7 @@ Expr *Parser::primary() {
         return new Variable(advance());
     }
 
-    errors.push_back("[line " + std::to_string(peek().line) + "] Error at ')': Expect expression.");
+    errors.push_back(peek().construct_err_message("Error at ')': Expect expression."));
     return nullptr;
 }
 
@@ -116,6 +116,25 @@ Expr *Parser::comparison() {
         expr = new Binary(expr, right, op);
     }
 
+    return expr;
+}
+
+Expr *Parser::assignment() {
+    Expr *expr = equality();
+
+    if (check(TokenType::EQUAL)) {
+        Token equals = advance();
+        // again call assignment because we have another assignment
+        // var x = y = 1;
+        //     ^   ^
+        if (expr->type == NodeType::VARIABLE) {
+            Expr *value = assignment();
+            Variable *var = static_cast<Variable *>(expr);
+            if (var)
+                return new Assign(var->identifier, value);
+        }
+        errors.push_back(equals.construct_err_message("Invalid assignment operation."));
+    }
     return expr;
 }
 
@@ -173,7 +192,7 @@ std::vector<Stmt *> Parser::parse_stmt() {
 
 Stmt *Parser::var_stmt() {
     Token identifier = consume(TokenType::IDENTIFIER, "Expected name of the variable");
-    
+
     Expr *expr;
     if (match(TokenType::EQUAL)) {
         expr = expression();
@@ -184,7 +203,7 @@ Stmt *Parser::var_stmt() {
     if (expr == nullptr) {
         errors.push_back(previous().construct_err_message("Undeclared variable: " + identifier.lexeme));
     }
-    
+
     consume(TokenType::SEMICOLON, previous().construct_err_message("Expected ;"));
     return new VariableStmt(expr, identifier);
 }
@@ -202,9 +221,15 @@ Stmt *Parser::expression_stmt() {
 
 Stmt *Parser::prnt_stmt() {
     Expr *expr = expression();
+
+    // for assignment inside print
+    if (match(TokenType::EQUAL)) {
+        expr = expression();
+    }
     if (match(TokenType::SEMICOLON)) {
         return new PrintStmt(expr);
     }
+
     errors.push_back(previous().construct_err_message("Expected ;"));
     return nullptr;
 }
@@ -213,7 +238,7 @@ Stmt *Parser::statement() {
     if (match(TokenType::PRINT)) {
         return prnt_stmt();
     }
-    if (match(TokenType::VAR)) {
+    if (match(TokenType::VAR) || check(TokenType::IDENTIFIER)) {
         return var_stmt();
     }
 

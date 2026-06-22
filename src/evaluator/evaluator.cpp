@@ -172,6 +172,19 @@ RuntimeValue Evaluator::evaluate(Expr *node) {
         errors.push_back(var->identifier.construct_err_message("Undeclared variable: " + var->identifier.lexeme));
         return nullptr;
     }
+    case NodeType::ASSIGN: {
+        Assign *assign_node = static_cast<Assign *>(node);
+        RuntimeValue value = evaluate(assign_node->value);
+
+        std::string &name = assign_node->identifier.lexeme;
+
+        if (!global->exists(name)) {
+            errors.push_back(assign_node->identifier.construct_err_message("Undeclared identifier."));
+            return nullptr;
+        }
+        global->set(name, value);
+        return value;
+    }
     };
     return nullptr;
 }
