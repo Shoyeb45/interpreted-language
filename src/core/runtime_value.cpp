@@ -19,7 +19,7 @@ bool is_truthy(RuntimeValue &value) {
         return get_number(value) != 0.0;
 
     if (is_string(value))
-        return !get_string(value).empty();
+        return true;
 
     if (is_nil(value))
         return false;
