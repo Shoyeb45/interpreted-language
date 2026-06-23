@@ -9,17 +9,6 @@ std::string Evaluator::evaluate() {
         return "";
     RuntimeValue result = this->evaluate(root);
 
-    // if (is_true(result)) {
-    //     return "true";
-    // } else if (is_false(result)) {
-    //     return "false";
-    // } else if (is_number(result)) {
-    //     return normalize_number_literal(get_number(result));
-    // } else if (is_nil(result)) {
-    //     return "nil";
-    // } else if (is_string(result)) {
-    //     return get_string(result);
-    // }
     return get_runtime_to_str(result);
 }
 
@@ -182,7 +171,7 @@ RuntimeValue Evaluator::evaluate(Expr *node) {
             errors.push_back(assign_node->identifier.construct_err_message("Undeclared identifier."));
             return nullptr;
         }
-        global->set(name, value);
+        global->assign(assign_node->identifier, value);
         return value;
     }
     };

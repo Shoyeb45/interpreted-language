@@ -238,7 +238,7 @@ Stmt *Parser::prnt_stmt() {
 Stmt *Parser::block_stmt() {
     std::vector<Stmt *> stmts;
     
-    while (!check(TokenType::RIGHT_BRACE) && !check(TokenType::END_OF_FILE)) {
+    while (!check(TokenType::RIGHT_BRACE) && !is_at_end()) {
         stmts.push_back(statement());
     }
 
@@ -253,7 +253,7 @@ Stmt *Parser::statement() {
     if (match(TokenType::PRINT)) {
         return prnt_stmt();
     }
-    if (match(TokenType::VAR) || check(TokenType::IDENTIFIER)) {
+    if (match(TokenType::VAR)) {
         return var_stmt();
     }
 

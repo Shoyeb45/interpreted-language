@@ -8,11 +8,12 @@
 struct Executor {
     std::vector<Stmt *> statements;
     Evaluator* evaluator = new Evaluator(nullptr);
-    std::string executePrntStmt(PrintStmt *prntStmt);
-    std::string executeExprStmt(ExprStmt *exprStmt);
-    std::string executeStmt(Stmt *stmt);
-    std::string executeVarStmt(VariableStmt *varStmt);
-
+    void execute_prnt_stmt(PrintStmt *prnt_stmt);
+    void execute_expr_stmt(ExprStmt *expr_stmt);
+    void execute_stmt(Stmt *stmt);
+    void execute_var_stmt(VariableStmt *var_stmt);
+    void execute_block_stmt(BlockStmt *block_stmt, EnvironmentTable *environment);
+    
   public:
     Executor(std::vector<Stmt *> &statements): statements(statements) {}
 

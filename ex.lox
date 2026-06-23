@@ -1,6 +1,13 @@
 {
-    var bar = 11;
-    var world = 11;
-    {
-        print bar + world;
-}./e
+  var quz = "outer quz";
+  var bar = "outer bar";
+  {
+    quz = "modified quz";
+    var bar = "inner bar";
+    print quz;
+    print bar;
+  }
+  print quz;
+  print bar;
+}
+print quz;
