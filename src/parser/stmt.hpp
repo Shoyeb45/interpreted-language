@@ -82,11 +82,13 @@ struct IfStmt : Stmt {
   public:
     Expr *expr;
     Stmt *then_branch;
+    Stmt *else_branch;
 
-    IfStmt(Expr *expr, Stmt *then_branch) {
+    IfStmt(Expr *expr, Stmt *then_branch, Stmt *else_branch) {
         type = NodeType::IF_STMT;
         this->then_branch = then_branch;
         this->expr = expr;
+        this->else_branch = else_branch;
     }
     
     std::string visualize() override {

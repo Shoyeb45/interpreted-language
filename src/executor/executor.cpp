@@ -62,10 +62,13 @@ void Executor::execute_if_stmt(IfStmt *if_stmt) {
         execute_stmt(if_stmt->then_branch);
     } else {
         // here we can execute else branch
+        execute_stmt(if_stmt->else_branch);
     }
 }
 
 void Executor::execute_stmt(Stmt *stmt) {
+    if (!stmt) return;
+
     switch (stmt->type) {
     case NodeType::EXPR_STMT: {
         execute_expr_stmt(static_cast<ExprStmt *>(stmt));
