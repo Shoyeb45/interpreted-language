@@ -77,3 +77,21 @@ struct BlockStmt : Stmt {
         return visz + "}";
     }
 };
+
+struct IfStmt : Stmt {
+  public:
+    Expr *expr;
+    Stmt *then_branch;
+
+    IfStmt(Expr *expr, Stmt *then_branch) {
+        type = NodeType::IF_STMT;
+        this->then_branch = then_branch;
+        this->expr = expr;
+    }
+    
+    std::string visualize() override {
+        std::string visz = "(if expression ";
+        if (expr) visz += expr->visualize();
+        return visz + ")";
+    }
+};

@@ -249,6 +249,26 @@ Stmt *Parser::block_stmt() {
     return nullptr;
 }
 
+Stmt *Parser::if_stmt() {
+    // we'll support both format with paren and without it also
+    if (match(TokenType::LEFT_PAREN)) {
+        // with paren
+        Expr* expr = expression();
+        consume(TokenType::RIGHT_PAREN, previous().construct_err_message("Expected ')"));
+
+        Stmt *then_branch = statement();
+
+        return new IfStmt(expr, then_branch);
+    }
+
+    // this will handle such case
+    // if x + y > 12 { ... }
+
+    Expr *expr = expression();
+    Stmt *then_branch = statement();
+    return new IfStmt(expr, then_branch);
+}
+
 Stmt *Parser::statement() {
     if (match(TokenType::PRINT)) {
         return prnt_stmt();
@@ -256,9 +276,11 @@ Stmt *Parser::statement() {
     if (match(TokenType::VAR)) {
         return var_stmt();
     }
-
     if (match(TokenType::LEFT_BRACE)) {
         return block_stmt();
+    }
+    if (match(TokenType::IF)) {
+        return if_stmt();
     }
 
     return expression_stmt();

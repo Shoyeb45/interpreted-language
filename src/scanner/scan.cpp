@@ -92,6 +92,10 @@ std::pair<TokenType, int> identify_token(int idx, const std::string &file_conten
                 type = TokenType::PRINT;
             } else if (word == "var") {
                 type = TokenType::VAR;
+            } else if (word == "if") {
+                type = TokenType::IF;
+            } else if (word == "else") {
+                type = TokenType::ELSE;
             }
         } else {
             type = TokenType::IDENTIFIER;

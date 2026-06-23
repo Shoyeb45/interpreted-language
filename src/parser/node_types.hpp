@@ -11,4 +11,5 @@ enum NodeType {
     EXPR_STMT,
     VARIABLE_STMT,
     BLOCK_STMT,
+    IF_STMT,
 };

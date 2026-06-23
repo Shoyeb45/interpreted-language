@@ -33,9 +33,13 @@ enum class TokenType {
     // Literals
     STRING,
     NUMBER,
+
+    // keywords
     TRUE,
     FALSE,
     NIL,
+    IF,
+    ELSE,
 
     PRINT,
     IDENTIFIER,

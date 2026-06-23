@@ -13,7 +13,10 @@ struct Executor {
     void execute_stmt(Stmt *stmt);
     void execute_var_stmt(VariableStmt *var_stmt);
     void execute_block_stmt(BlockStmt *block_stmt, EnvironmentTable *environment);
+    void execute_if_stmt(IfStmt *if_stmt);
     
+    // utility methods
+    RuntimeValue evaluate_expr(Expr *expr);
   public:
     Executor(std::vector<Stmt *> &statements): statements(statements) {}
 
