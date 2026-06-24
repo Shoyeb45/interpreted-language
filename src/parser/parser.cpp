@@ -322,6 +322,57 @@ Stmt *Parser::while_stmt() {
     return new WhileStmt(condition, body);
 }
 
+// for (init; condi; update) { .. body .. }
+Stmt *Parser::for_stmt() {
+    consume(TokenType::LEFT_PAREN, previous().construct_err_message("Expected '('"));
+    Stmt *initializer = nullptr;
+
+    // empty initializer
+    if (match(TokenType::SEMICOLON)) {
+        initializer = nullptr;
+    }
+    // intializer with var
+    else if (match(TokenType::VAR)) {
+        initializer = var_stmt();
+    }
+    // initializer without var 
+    else {
+        initializer = expression_stmt();
+    }
+
+    Expr *condition = nullptr;
+    if (!check(TokenType::SEMICOLON)) {
+        condition = expression();
+    }
+    consume(TokenType::SEMICOLON, previous().construct_err_message("Expected ';', after for loop condition"));
+    
+    Expr *update = nullptr;
+    if (!check(TokenType::RIGHT_PAREN)) {
+        update = expression();
+    }
+    consume(TokenType::RIGHT_PAREN, previous().construct_err_message("Expected ')' after for clauses."));
+
+    Stmt *body = statement();
+
+    // we'll merge the update part in the body itself, because it's the same thing
+    if (update) {
+        std::vector<Stmt*> stmts = {body, new ExprStmt(update)};
+        body = new BlockStmt(stmts);
+    }
+    
+    // if the no condition provided then by default provide true
+    if (!condition) condition = new Literal(Token{"true", TokenType::TRUE, -1});
+
+    body = new WhileStmt(condition, body);
+
+    // initializer will once  before the condition or the main body
+    if (initializer) {
+        std::vector<Stmt *> stmts = {initializer, body};
+        body = new BlockStmt(stmts);
+    }
+    return body;
+}
+
 Stmt *Parser::statement() {
     if (match(TokenType::PRINT)) {
         return prnt_stmt();
@@ -337,6 +388,9 @@ Stmt *Parser::statement() {
     }
     if (match(TokenType::WHILE)) {
         return while_stmt();
+    }
+    if (match(TokenType::FOR)) {
+        return for_stmt();
     }
 
     return expression_stmt();

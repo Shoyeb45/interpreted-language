@@ -1,4 +1,1 @@
-if (true and "hello") print "hello";
-if (56 and "bar") print "bar";
-if ("bar" and "bar") print "bar";
-if ("" and "baz") print "baz";
+for (var foo = 0; foo < 3;) print foo = foo + 1;

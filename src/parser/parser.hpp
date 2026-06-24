@@ -48,6 +48,7 @@ struct Parser {
     Stmt *block_stmt();
     Stmt *if_stmt();
     Stmt *while_stmt();
+    Stmt *for_stmt();
 
   public:
     Parser(std::vector<Token> &tokens) {
