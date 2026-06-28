@@ -142,8 +142,9 @@ struct Call : Expr {
   public:
     Expr *calle;
     std::vector<Expr *> args;
-
-    Call(Expr *calle, std::vector<Expr *> &args) {
+    Token name;
+    Call(Token name, Expr *calle, std::vector<Expr *> &args) {
+        this->name = name;
         this->calle = calle;
         this->args = args;
         type = NodeType::CALL;

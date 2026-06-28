@@ -84,11 +84,12 @@ Expr *Parser::primary() {
 
 Expr *Parser::call() {
     Expr *expr = primary();
+    Token name = previous(); 
 
     while (!is_at_end()) {
         // arg starting
         if (match(TokenType::LEFT_PAREN)) {
-            expr = finish_call(expr);
+            expr = finish_call(expr, name);
         } else {
             break;
         }
@@ -96,7 +97,7 @@ Expr *Parser::call() {
     return expr;
 }
 
-Expr *Parser::finish_call(Expr *calle) {
+Expr *Parser::finish_call(Expr *calle, Token& name) {
     std::vector<Expr *> arguments;
     // if we have args: ( arg1, arg2, ... )
     if (!check(TokenType::RIGHT_PAREN)) {
@@ -107,7 +108,7 @@ Expr *Parser::finish_call(Expr *calle) {
 
     consume(TokenType::RIGHT_PAREN, previous().construct_err_message("Expected ')' at the argument ending"));
 
-    return new Call(calle, arguments);
+    return new Call(name, calle, arguments);
 }
 
 Expr *Parser::factor() {

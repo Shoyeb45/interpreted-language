@@ -41,7 +41,7 @@ struct Parser {
     Expr *or_expr();
     Expr *and_expr();
     Expr *call();
-    Expr *finish_call(Expr *calle);
+    Expr *finish_call(Expr *calle, Token &name);
 
     std::vector<Stmt*> block();
     Stmt *expression_stmt();
@@ -54,7 +54,7 @@ struct Parser {
     Stmt *for_stmt();
     Stmt *function_stmt(std::string kind);
     Stmt *return_stmt();
-    
+
     void uninitalize_var_error(Stmt *stmt);
     void synchronize();
   public:

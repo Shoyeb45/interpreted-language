@@ -327,11 +327,16 @@ RuntimeValue Interpreter::perform_fun_call(Call *fun_call_node) {
         args.push_back(evaluate(expr));
 
     if (!is_callable(calle)) {
-        errors.push_back("Unknown value found while calling a function");
+        errors.push_back(fun_call_node->name.construct_err_message("Unknown value found while calling a function"));
         return nullptr;
     }
 
     auto function = get_callable(calle);
+    if (function->arity() != args.size()) {
+        errors.push_back(fun_call_node->name.construct_err_message(
+            "Expected " + std::to_string(function->arity()) + " arguments but got " + std::to_string(args.size())));
+        return nullptr;
+    }
     return function->call(this, args);
 }
 
