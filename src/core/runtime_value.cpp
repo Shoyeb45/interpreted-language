@@ -1,5 +1,6 @@
 #include "runtime_value.hpp"
 #include "utils.hpp"
+#include "callable.hpp"
 #include <iostream>
 #include <string>
 
@@ -72,14 +73,16 @@ std::string get_runtime_to_str(RuntimeValue &value) {
         return "nil";
     } else if (is_string(value)) {
         return get_string(value);
+    } else if (is_callable(value)) {
+        return get_callable(value)->to_string();
     }
     return "";
 }
 
 bool is_callable(RuntimeValue &value) {
-    return std::holds_alternative<Callable *>(value);
+    return std::holds_alternative<std::shared_ptr<Callable>>(value);
 }
 
-Callable* get_callable(RuntimeValue &value) {
-    return std::get<Callable *>(value);
+std::shared_ptr<Callable> get_callable(RuntimeValue &value) {
+    return std::get<std::shared_ptr<Callable>>(value);
 }

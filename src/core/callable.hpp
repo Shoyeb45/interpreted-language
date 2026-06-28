@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../executor/executor.hpp"
+#include "../interpreter/interpreter.hpp"
 #include "../parser/stmt.hpp"
 #include "runtime_value.hpp"
 #include <chrono>
@@ -11,25 +11,25 @@ struct Callable {
   public:
     virtual int arity() = 0;
     virtual std::string to_string() = 0;
-    virtual RuntimeValue call(Executor *executor, const std::vector<RuntimeValue> &args) = 0;
+    virtual RuntimeValue call(Interpreter *interpreter, const std::vector<RuntimeValue> &args) = 0;
     virtual ~Callable() = default;
 };
 
 struct ClockFunction : Callable {
   public:
-    int arity() override {
+    int arity() {
         return 0;
     }
 
-    RuntimeValue call(Executor *executor, const std::vector<RuntimeValue> &args) override {
-        auto ms =
-            std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
+    RuntimeValue call(Interpreter *interpreter, const std::vector<RuntimeValue> &args) {
+        auto sec =
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
                 .count();
 
-        return static_cast<double>(ms);
+        return static_cast<double>(sec);
     }
 
-    std::string to_string() override {
+    std::string to_string() {
         return "<func native clock>";
     }
 };
@@ -41,8 +41,8 @@ struct CustomFunction : Callable {
         this->declaration = declaration;
     }
 
-    RuntimeValue call(Executor *executor, const std::vector<RuntimeValue> &args) override {
-        EnvironmentTable *env = new EnvironmentTable(executor->evaluator->global);
+    RuntimeValue call(Interpreter *interpreter, const std::vector<RuntimeValue> &args) {
+        EnvironmentTable *env = new EnvironmentTable(interpreter->global);
 
         if (declaration->params.size() != args.size()) {
             // error, std::exit(70) ? maybe
@@ -52,7 +52,7 @@ struct CustomFunction : Callable {
         for (int i = 0; i < declaration->params.size(); i++) {
             env->set(declaration->params[i].lexeme, args[i]);
         }
-        executor->execute_block_stmt(declaration->body, env);
+        interpreter->execute_block_stmt(declaration->body, env);
         return nullptr;
     }
 

@@ -238,7 +238,7 @@ void Parser::report_error() {
 
 std::vector<Stmt *> Parser::parse_stmt() {
     while (!is_at_end()) {
-        std::cout << peek() << "\n";
+        // std::cout << peek() << "\n";
         statements.push_back(statement());
     }
     return statements;

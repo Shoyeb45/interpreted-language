@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../core/runtime_value.hpp"
+#include "../scanner/token.hpp"
 #include <iostream>
 #include <string>
 #include <unordered_map>

@@ -16,11 +16,11 @@ bool is_true(RuntimeValue &value);
 bool is_false(RuntimeValue &value);
 bool is_bool(RuntimeValue &value);
 bool is_callable(RuntimeValue &value);
+bool is_callable(RuntimeValue &value);
 
 double get_number(RuntimeValue &value);
 std::string get_string(RuntimeValue &value);
 std::string get_runtime_to_str(RuntimeValue &value);
-bool get_bool(RuntimeValue &value);
-Callable* get_callable(RuntimeValue &value)p;
-
+std::shared_ptr<Callable> get_callable(RuntimeValue &value);
 nullptr_t get_nil(RuntimeValue &value);
+bool get_bool(RuntimeValue &value);

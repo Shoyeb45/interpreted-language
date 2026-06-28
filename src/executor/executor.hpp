@@ -5,9 +5,12 @@
 #include "../evaluator/evaluator.hpp"
 #include <vector>
 
+/// @deprecated
+/// Not supported for the function and beyond
 struct Executor {
     std::vector<Stmt *> statements;
     Evaluator* evaluator = new Evaluator(nullptr);
+
     void execute_prnt_stmt(PrintStmt *prnt_stmt);
     void execute_expr_stmt(ExprStmt *expr_stmt);
     void execute_stmt(Stmt *stmt);
@@ -15,7 +18,6 @@ struct Executor {
     void execute_block_stmt(BlockStmt *block_stmt, EnvironmentTable *environment);
     void execute_if_stmt(IfStmt *if_stmt);
     void execute_while_stmt(WhileStmt *while_stmt);
-    void execute_func_stmt(FuncStmt *func_stmt);
     
     // utility methods
     RuntimeValue evaluate_expr(Expr *expr);

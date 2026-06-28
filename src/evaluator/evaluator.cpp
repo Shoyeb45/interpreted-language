@@ -5,17 +5,13 @@
 #include <iostream>
 #include <string>
 
+
 std::string Evaluator::evaluate() {
     if (!root)
         return "";
     RuntimeValue result = this->evaluate(root);
 
     return get_runtime_to_str(result);
-}
-
-void Evaluator::define_native_fns() {
-    std::string clock = "clock";
-    global->set(clock, std::make_shared<ClockFunction>());
 }
 
 bool check_invalid_values(RuntimeValue &v1, RuntimeValue &v2) {
@@ -156,23 +152,6 @@ RuntimeValue Evaluator::perform_logical_operation(Logical *logical_node) {
     return evaluate(logical_node->right);
 }
 
-RuntimeValue Evaluator::perform_fun_call(Call *fun_call_node) {
-    RuntimeValue calle = evaluate(fun_call_node->calle);
-
-    std::vector<RuntimeValue> args;
-
-    for (Expr *expr: fun_call_node->args)
-        args.push_back(evaluate(expr));
-    
-    if (!is_callable(calle)) {
-        errors.push_back("Unknown value found while calling a function");
-        return nullptr;
-    }
-
-    Callable *function = get_callable(calle);
-    return function->call(, args);
-}
-
 RuntimeValue Evaluator::evaluate(Expr *node) {
     if (!node)
         return nullptr;
@@ -211,9 +190,6 @@ RuntimeValue Evaluator::evaluate(Expr *node) {
     }
     case NodeType::LOGICAL: {
         return perform_logical_operation(static_cast<Logical *>(node));
-    }
-    case NodeType::CALL: {
-        return perform_fun_call(static_cast<Call *>(node));
     }
     };
     return nullptr;
