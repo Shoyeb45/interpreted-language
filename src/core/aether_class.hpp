@@ -18,13 +18,15 @@ struct AetherInstance {
 
 struct AetherClass : Callable {
     std::string name;
+    std::unordered_map<std::string, std::shared_ptr<Callable>> methods;
 
-    AetherClass(std::string &name)
-        : name(name) {}
+    AetherClass(std::string &name, std::unordered_map<std::string, std::shared_ptr<Callable>> methods)
+        : name(name), methods(methods) {}
 
     std::string to_string();
 
     int arity();
     RuntimeValue call(Interpreter *interpreter, const std::vector<RuntimeValue> &args);
+    std::shared_ptr<Callable> find_method(std::string &name);
 };
 

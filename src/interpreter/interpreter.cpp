@@ -32,7 +32,13 @@ void Interpreter::execute_return_stmt(ReturnStmt *return_stmt) {
 }
 
 void Interpreter::execute_class_stmt(ClassStmt *class_stmt) {
-    AetherClass aether_class(class_stmt->name.lexeme);
+    std::unordered_map<std::string, std::shared_ptr<Callable>> methods;
+
+    for (FuncStmt *stmt : class_stmt->methods) {
+        methods[stmt->name.lexeme] = std::make_shared<CustomFunction>(CustomFunction{stmt, environment});
+    }
+  
+    AetherClass aether_class(class_stmt->name.lexeme, methods);
     environment->set(class_stmt->name.lexeme, std::make_shared<AetherClass>(aether_class));
 }
 
@@ -176,10 +182,9 @@ RuntimeValue Interpreter::perform_set_expr(Set *set_node) {
 
     RuntimeValue value = evaluate_expr(set_node->value);
     get_aether_instance(instance)->set(set_node->name, value);
-    
+
     return value;
 }
-
 
 RuntimeValue Interpreter::evaluate(Expr *node) {
     if (!node)

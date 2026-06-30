@@ -44,7 +44,7 @@ void Resolver::end_scope() {
 }
 
 // Statement resolvers
-void Resolver::resolve_function(FuncStmt *fun_stmt) {
+void Resolver::resolve_function(FuncStmt *fun_stmt, std::string function_type) {
     begin_scope();
     for (Token &param : fun_stmt->params) {
         declare(param);
@@ -74,7 +74,7 @@ void Resolver::resolve_fun_declaration(FuncStmt *fun_stmt) {
     declare(fun_stmt->name);
     define(fun_stmt->name);
 
-    resolve_function(fun_stmt);
+    resolve_function(fun_stmt, "function");
 }
 
 void Resolver::resolve_expr_stmt(ExprStmt *expr_stmt) {
@@ -106,6 +106,9 @@ void Resolver::resolve_while_stmt(WhileStmt *while_stmt) {
 void Resolver::resolve_class_declaration(ClassStmt *class_stmt) {
     declare(class_stmt->name);
     define(class_stmt->name);
+    for (FuncStmt *stmt : class_stmt->methods) {
+        resolve_function(stmt, "method");
+    }
 }
 
 void Resolver::resolve(Stmt *stmt) {

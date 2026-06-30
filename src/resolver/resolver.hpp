@@ -15,7 +15,7 @@ struct Resolver {
     void end_scope();
     void begin_scope();
     void resolve_local(Expr *expr, Token &name);
-    void resolve_function(FuncStmt *fun_stmt);
+    void resolve_function(FuncStmt *fun_stmt, std::string kind);
 
     void resolve(Stmt *stmt);
     void resolve_if_stmt(IfStmt *if_stmt);
