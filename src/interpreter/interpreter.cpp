@@ -154,22 +154,16 @@ RuntimeValue Interpreter::evaluate(Expr *node) {
         return evaluate(static_cast<Group *>(node)->ast_node);
     case NodeType::BINARY:
         return perform_binary_operation(static_cast<Binary *>(node));
-    case NodeType::UNARY: {
+    case NodeType::UNARY:
         return perform_unary_operation(static_cast<Unary *>(node));
-    }
-    case NodeType::VARIABLE: {
-        Variable *var = static_cast<Variable *>(node);
-        return look_up_variable(var->identifier, var);
-    }
-    case NodeType::ASSIGN: {
+    case NodeType::VARIABLE:
+        return look_up_variable(static_cast<Variable *>(node));
+    case NodeType::ASSIGN:
         return assign_variable(static_cast<Assign *>(node));
-    }
-    case NodeType::LOGICAL: {
+    case NodeType::LOGICAL:
         return perform_logical_operation(static_cast<Logical *>(node));
-    }
-    case NodeType::CALL: {
+    case NodeType::CALL:
         return perform_fun_call(static_cast<Call *>(node));
-    }
     };
     return nullptr;
 }
@@ -183,7 +177,8 @@ RuntimeValue Interpreter::assign_variable(Assign *assign) {
         int dist = locals.at(assign);
         // if (environment->existsAt(name, dist)) {
         //     errors.push_back(
-        //         assign->identifier.construct_err_message("Error at " + name + ": Already a variable with this name in this scope.")
+        //         assign->identifier.construct_err_message("Error at " + name + ": Already a variable with this name in
+        //         this scope.")
         //     );
         //     report_error();
         //     std::exit(70);
@@ -372,16 +367,17 @@ void Interpreter::resolve(Expr *expr, int depth) {
     locals[expr] = depth;
 }
 
-RuntimeValue Interpreter::look_up_variable(Token &name, Expr *expr) {
+RuntimeValue Interpreter::look_up_variable(Variable *expr) {
+    std::string name = expr->identifier.lexeme;
     if (locals.find(expr) != locals.end()) {
         int dist = locals.at(expr);
-        return environment->getAt(name.lexeme, dist);
+        return environment->getAt(name, dist);
     }
 
-    if (global->exists(name.lexeme))
-        return global->get(name.lexeme);
+    if (global->exists(name))
+        return global->get(name);
 
-    errors.push_back(name.construct_err_message("Undeclared variable: " + name.lexeme));
+    errors.push_back(expr->identifier.construct_err_message("Undeclared variable: " + name));
     report_error();
     std::exit(70);
 }

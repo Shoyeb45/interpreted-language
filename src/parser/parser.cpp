@@ -473,13 +473,22 @@ Stmt *Parser::function_stmt(std::string kind) {
 
     // Now function body
     consume(TokenType::LEFT_BRACE, previous().construct_err_message("Expect '{' after " + kind + " parameters."));
+
+    fun_depth++;
     BlockStmt *body = (BlockStmt*) block_stmt();
+    fun_depth--;
 
     return new FuncStmt(identifier, params, body);
 }
 
 
 Stmt *Parser::return_stmt() {
+    if (fun_depth == 0) {
+        errors.push_back(
+            previous().construct_err_message("Can't return from top-level code.")
+        );
+        return nullptr;
+    }
     Expr *expr = nullptr;
     if (!check(TokenType::SEMICOLON)) 
         expr = expression();

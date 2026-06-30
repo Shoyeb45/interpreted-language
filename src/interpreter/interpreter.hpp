@@ -47,7 +47,7 @@ struct Interpreter {
     bool check_invalid_values(RuntimeValue &v1, RuntimeValue &v2);
     RuntimeValue evaluate_expr(Expr *expr);
     void report_error();
-    RuntimeValue look_up_variable(Token &name, Expr *expr);
+    RuntimeValue look_up_variable(Variable *expr);
     RuntimeValue assign_variable(Assign *assign);
 
     Interpreter(std::vector<Stmt *> &stmts) {

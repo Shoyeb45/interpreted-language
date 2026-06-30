@@ -5,6 +5,7 @@
 #include <vector>
 
 struct Parser {
+    int fun_depth = 0;
     std::vector<Token> tokens;
     // for multi stmts
     std::vector<Stmt *> statements;
