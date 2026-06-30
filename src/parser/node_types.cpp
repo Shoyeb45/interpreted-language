@@ -47,6 +47,9 @@ std::string node_type_to_string(NodeType type) {
     case NodeType::CALL: {
         return "CALL EXPR";
     }
+    case NodeType::CLASS_STMT: {
+        return "CLASS STMT";
+    }
     }
     return "INVALID NODE TYPE";
 }

@@ -1,6 +1,7 @@
 #include "runtime_value.hpp"
 #include "utils.hpp"
 #include "callable.hpp"
+#include "aether_class.hpp"
 #include <iostream>
 #include <string>
 
@@ -75,6 +76,8 @@ std::string get_runtime_to_str(RuntimeValue &value) {
         return get_string(value);
     } else if (is_callable(value)) {
         return get_callable(value)->to_string();
+    } else if (is_aether_class(value)) {
+        return get_aether_class(value)->to_string();
     }
     return "";
 }
@@ -85,4 +88,12 @@ bool is_callable(RuntimeValue &value) {
 
 std::shared_ptr<Callable> get_callable(RuntimeValue &value) {
     return std::get<std::shared_ptr<Callable>>(value);
+}
+
+bool is_aether_class(RuntimeValue &value) {
+    return std::holds_alternative<std::shared_ptr<AetherClass>>(value);
+}
+
+std::shared_ptr<AetherClass> get_aether_class(RuntimeValue &value) {
+    return std::get<std::shared_ptr<AetherClass>>(value);
 }

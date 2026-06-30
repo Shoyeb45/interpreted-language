@@ -46,6 +46,7 @@ enum class TokenType {
     FOR,
     FUN,
     RETURN,
+    CLASS,
     
     PRINT,
     IDENTIFIER,

@@ -103,6 +103,11 @@ void Resolver::resolve_while_stmt(WhileStmt *while_stmt) {
     resolve(while_stmt->body);
 }
 
+void Resolver::resolve_class_declaration(ClassStmt *class_stmt) {
+    declare(class_stmt->name);
+    define(class_stmt->name);
+}
+
 void Resolver::resolve(Stmt *stmt) {
     switch (stmt->type) {
     case NodeType::BLOCK_STMT:
@@ -128,6 +133,9 @@ void Resolver::resolve(Stmt *stmt) {
         break;
     case NodeType::WHILE_STMT:
         resolve_while_stmt(static_cast<WhileStmt *>(stmt));
+        break;
+    case NodeType::CLASS_STMT:
+        resolve_class_declaration(static_cast<ClassStmt *>(stmt));
         break;
     }
 }

@@ -55,6 +55,7 @@ struct Parser {
     Stmt *for_stmt();
     Stmt *function_stmt(std::string kind);
     Stmt *return_stmt();
+    Stmt *class_stmt();
 
     void uninitalize_var_error(Stmt *stmt);
     void synchronize();

@@ -1,5 +1,6 @@
 #include "./interpreter.hpp"
 #include "../core/callable.hpp"
+#include "../core/aether_class.hpp"
 #include "../exceptions/return_exception.hpp"
 
 void Interpreter::execute() {
@@ -28,6 +29,11 @@ void Interpreter::execute_return_stmt(ReturnStmt *return_stmt) {
         std::exit(70);
     }
     throw ReturnExecption(return_value);
+}
+
+void Interpreter::execute_class_stmt(ClassStmt *class_stmt) {
+    AetherClass aether_class(class_stmt->name.lexeme);
+    environment->set(class_stmt->name.lexeme, std::make_shared<AetherClass>(aether_class));
 }
 
 void Interpreter::execute_stmt(Stmt *stmt) {
@@ -65,6 +71,10 @@ void Interpreter::execute_stmt(Stmt *stmt) {
     }
     case NodeType::RETURN_STMT: {
         execute_return_stmt(static_cast<ReturnStmt *>(stmt));
+        break;
+    }
+    case NodeType::CLASS_STMT: {
+        execute_class_stmt(static_cast<ClassStmt *>(stmt));
         break;
     }
     }
@@ -175,14 +185,6 @@ RuntimeValue Interpreter::assign_variable(Assign *assign) {
 
     if (locals.find(assign) != locals.end()) {
         int dist = locals.at(assign);
-        // if (environment->existsAt(name, dist)) {
-        //     errors.push_back(
-        //         assign->identifier.construct_err_message("Error at " + name + ": Already a variable with this name in
-        //         this scope.")
-        //     );
-        //     report_error();
-        //     std::exit(70);
-        // }
         environment->assignAt(name, dist, value);
         return value;
     }

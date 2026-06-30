@@ -27,15 +27,15 @@ struct Interpreter {
 
     // Main exeuctors
     void execute_stmt(Stmt *stmt);
+    void execute_if_stmt(IfStmt *if_stmt);
+    void execute_var_stmt(VariableStmt *var_stmt);
+    void execute_func_stmt(FuncStmt *func_stmt);
     void execute_expr_stmt(ExprStmt *expr_stmt);
     void execute_prnt_stmt(PrintStmt *prnt_stmt);
-    void execute_var_stmt(VariableStmt *var_stmt);
-    void execute_block_stmt(BlockStmt *block_stmt, EnvironmentTable *environment);
-    void execute_if_stmt(IfStmt *if_stmt);
     void execute_while_stmt(WhileStmt *while_stmt);
-    void execute_func_stmt(FuncStmt *func_stmt);
+    void execute_class_stmt(ClassStmt *class_stmt);
+    void execute_block_stmt(BlockStmt *block_stmt, EnvironmentTable *environment);
     void execute_return_stmt(ReturnStmt *return_stmt);
-
     // Evaluate methods
     RuntimeValue evaluate(Expr *expr);
     RuntimeValue perform_binary_operation(Binary *binary_node);

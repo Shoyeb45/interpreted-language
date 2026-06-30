@@ -173,3 +173,22 @@ struct ReturnStmt : Stmt {
         return " (return stmt: " + (expr ? expr->visualize() : "") + ")";
     }
 };
+
+struct ClassStmt : Stmt {
+    Token name;
+    std::vector<FuncStmt *> methods;
+
+    ClassStmt(Token &name, std::vector<FuncStmt *> &methods) {
+        type = NodeType::CLASS_STMT;
+        this->name = name;
+        this->methods = methods;
+    }
+
+    std::string visualize() override {
+        std::string visz = "{class decl, name: " + name.lexeme + ", methods:\n";
+        for (auto &method: methods) {
+            visz += method->visualize() + "\n";
+        }
+        return visz + "}";
+    }
+};

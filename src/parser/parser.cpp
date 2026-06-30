@@ -497,6 +497,22 @@ Stmt *Parser::return_stmt() {
     return new ReturnStmt(expr);
 }
 
+Stmt *Parser::class_stmt() {
+    Token name = consume(TokenType::IDENTIFIER, peek().construct_err_message("Expect class name."));
+
+    consume(TokenType::LEFT_BRACE, previous().construct_err_message("Expect '{' before class body."));
+    
+    std::vector<FuncStmt *> methods;
+    
+    while (!check(TokenType::RIGHT_BRACE) && !is_at_end()) {
+        std::cout << peek() << "\n";
+        methods.push_back((FuncStmt *) function_stmt("method"));
+    }
+    consume(TokenType::RIGHT_BRACE, previous().construct_err_message("Expect '}' after class body."));
+
+    return new ClassStmt(name, methods);
+}
+
 Stmt *Parser::statement() {
     if (match(TokenType::PRINT)) {
         return prnt_stmt();
@@ -521,6 +537,9 @@ Stmt *Parser::statement() {
     }
     if (match(TokenType::RETURN)) {
         return return_stmt();
+    }
+    if (match(TokenType::CLASS)) {
+        return class_stmt();
     }
 
     return expression_stmt();

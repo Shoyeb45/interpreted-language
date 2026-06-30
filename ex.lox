@@ -1,4 +1,5 @@
-fun foo(a) {
-  var a;
+class NewOne {
+  
 }
-return "something";
+
+print NewOne;

@@ -110,6 +110,8 @@ std::pair<TokenType, int> identify_token(int idx, const std::string &file_conten
                 type = TokenType::FUN;
             } else if (word == "return") {
                 type = TokenType::RETURN;
+            } else if (word == "class") {
+                type = TokenType::CLASS;
             }
         } else {
             type = TokenType::IDENTIFIER;
