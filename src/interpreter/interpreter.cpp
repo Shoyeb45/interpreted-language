@@ -1,6 +1,6 @@
 #include "./interpreter.hpp"
-#include "../core/callable.hpp"
 #include "../core/aether_class.hpp"
+#include "../core/callable.hpp"
 #include "../exceptions/return_exception.hpp"
 
 void Interpreter::execute() {
@@ -153,6 +153,34 @@ void Interpreter::execute_func_stmt(FuncStmt *func_stmt) {
 Evaluation Code
 */
 
+RuntimeValue Interpreter::perform_get_expr(Get *get_node) {
+    RuntimeValue value = evaluate(get_node->expr);
+
+    if (is_aether_instance(value)) {
+        auto instance = get_aether_instance(value);
+        return instance->get(get_node->name);
+    }
+    errors.push_back(get_node->name.construct_err_message("Only instances have properties."));
+    report_error();
+    std::exit(70);
+}
+
+RuntimeValue Interpreter::perform_set_expr(Set *set_node) {
+    RuntimeValue instance = evaluate(set_node->expr);
+
+    if (!is_aether_instance(instance)) {
+        errors.push_back(set_node->name.construct_err_message("Only instances have fields."));
+        report_error();
+        std::exit(70);
+    }
+
+    RuntimeValue value = evaluate_expr(set_node->value);
+    get_aether_instance(instance)->set(set_node->name, value);
+    
+    return value;
+}
+
+
 RuntimeValue Interpreter::evaluate(Expr *node) {
     if (!node)
         return nullptr;
@@ -174,6 +202,10 @@ RuntimeValue Interpreter::evaluate(Expr *node) {
         return perform_logical_operation(static_cast<Logical *>(node));
     case NodeType::CALL:
         return perform_fun_call(static_cast<Call *>(node));
+    case NodeType::GET:
+        return perform_get_expr(static_cast<Get *>(node));
+    case NodeType::SET:
+        return perform_set_expr(static_cast<Set *>(node));
     };
     return nullptr;
 }

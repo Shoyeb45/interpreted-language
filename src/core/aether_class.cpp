@@ -4,6 +4,18 @@ std::string AetherInstance::to_string() {
     return aether_class->name + " instance";
 }
 
+RuntimeValue AetherInstance::get(Token &name) {
+    if (fields.find(name.lexeme) != fields.end()) {
+        return fields.at(name.lexeme);
+    }
+    std::cerr << name.construct_err_message("Undefined property '" + name.lexeme + "'.") << "\n";
+    std::exit(70);
+}
+
+void AetherInstance::set(Token &name, RuntimeValue &val) {
+    fields[name.lexeme] = val;
+}
+
 std::string AetherClass::to_string() {
     return name;
 }

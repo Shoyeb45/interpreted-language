@@ -27,8 +27,10 @@ struct Resolver {
     void resolve_variable_stmt(VariableStmt *variable_stmt);
     void resolve_fun_declaration(FuncStmt *fun_stmt);
     void resolve_class_declaration(ClassStmt *class_stmt);
-
+    
     void resolve_expr(Expr *expr);
+    void resolve_get_expr(Get *get);
+    void resolve_set_expr(Set *set);
     void resolve_grp_expr(Group *grp);
     void resolve_call_expr(Call *call);
     void resolve_unary_expr(Unary *unary);
@@ -36,6 +38,7 @@ struct Resolver {
     void resolve_binary_expr(Binary *binary);
     void resolve_logical_expr(Logical *logical);
     void resolve_variable_expr(Variable *variable);
+
   public:
     void resolve();
     void resolve_stmts(std::vector<Stmt *> &stmts);

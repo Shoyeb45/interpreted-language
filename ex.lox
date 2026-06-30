@@ -1,11 +1,14 @@
 class Superhero {}
+var batman = Superhero();
+var superman = Superhero();
 
-var count = 0;
-while (count < 3) {
-  var hero = Superhero();
-  print "Hero created:";
-  print hero;
-  count = count + 1;
-}
+batman.name = "Batman";
+batman.called = 18;
 
-print "All heroes created!";
+superman.name = "Superman";
+superman.called = 66;
+
+print "Times " + superman.name + " was called: ";
+print superman.called;
+print "Times " + batman.name + " was called: ";
+print batman.called;

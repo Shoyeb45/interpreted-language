@@ -185,6 +185,15 @@ void Resolver::resolve_unary_expr(Unary *unary) {
     resolve_expr(unary->child);
 }
 
+void Resolver::resolve_get_expr(Get *get) {
+    resolve_expr(get->expr);
+}
+
+void Resolver::resolve_set_expr(Set *set) {
+    resolve_expr(set->expr);
+    resolve_expr(set->value);
+}
+
 void Resolver::resolve_expr(Expr *expr) {
     switch (expr->type) {
     case NodeType::VARIABLE:
@@ -207,6 +216,12 @@ void Resolver::resolve_expr(Expr *expr) {
         break;
     case NodeType::UNARY:
         resolve_unary_expr(static_cast<Unary *>(expr));
+        break;
+    case NodeType::GET:
+        resolve_get_expr(static_cast<Get *>(expr));
+        break;
+    case NodeType::SET:
+        resolve_set_expr(static_cast<Set *>(expr));
         break;
     }
 }

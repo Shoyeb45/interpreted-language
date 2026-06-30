@@ -11,6 +11,8 @@ enum NodeType {
     LOGICAL,
     ASSIGN,
     CALL,
+    GET, // getter for the instances
+    SET, // setter for the instances
     PRINT_STMT,
     EXPR_STMT,
     VARIABLE_STMT,

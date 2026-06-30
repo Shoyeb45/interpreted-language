@@ -50,6 +50,12 @@ std::string node_type_to_string(NodeType type) {
     case NodeType::CLASS_STMT: {
         return "CLASS STMT";
     }
+    case NodeType::GET: {
+        return "GET EXPR";
+    }
+    case NodeType::SET: {
+        return "SET EXPR";
+    }
     }
     return "INVALID NODE TYPE";
 }

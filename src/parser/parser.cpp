@@ -84,12 +84,15 @@ Expr *Parser::primary() {
 
 Expr *Parser::call() {
     Expr *expr = primary();
-    Token name = previous(); 
+    Token name = previous();
 
     while (!is_at_end()) {
         // arg starting
         if (match(TokenType::LEFT_PAREN)) {
             expr = finish_call(expr, name);
+        } else if (match(TokenType::DOT)) {
+            Token name = consume(TokenType::IDENTIFIER, "Expected property name after '.'");
+            expr = new Get(expr, name);
         } else {
             break;
         }
@@ -97,7 +100,7 @@ Expr *Parser::call() {
     return expr;
 }
 
-Expr *Parser::finish_call(Expr *calle, Token& name) {
+Expr *Parser::finish_call(Expr *calle, Token &name) {
     std::vector<Expr *> arguments;
     // if we have args: ( arg1, arg2, ... )
     if (!check(TokenType::RIGHT_PAREN)) {
@@ -181,11 +184,13 @@ Expr *Parser::assignment() {
         // again call assignment because we have another assignment
         // var x = y = 1;
         //     ^   ^
+        Expr *value = assignment();
         if (expr->type == NodeType::VARIABLE) {
-            Expr *value = assignment();
             Variable *var = static_cast<Variable *>(expr);
-            if (var)
-                return new Assign(var->identifier, value);
+            return new Assign(var->identifier, value);
+        } else if (expr->type == NodeType::GET) {
+            Get *get = static_cast<Get *>(expr);
+            return new Set(get->expr, value, get->name);
         }
         errors.push_back(equals.construct_err_message("Invalid assignment operation."));
     }
@@ -475,22 +480,19 @@ Stmt *Parser::function_stmt(std::string kind) {
     consume(TokenType::LEFT_BRACE, previous().construct_err_message("Expect '{' after " + kind + " parameters."));
 
     fun_depth++;
-    BlockStmt *body = (BlockStmt*) block_stmt();
+    BlockStmt *body = (BlockStmt *)block_stmt();
     fun_depth--;
 
     return new FuncStmt(identifier, params, body);
 }
 
-
 Stmt *Parser::return_stmt() {
     if (fun_depth == 0) {
-        errors.push_back(
-            previous().construct_err_message("Can't return from top-level code.")
-        );
+        errors.push_back(previous().construct_err_message("Can't return from top-level code."));
         return nullptr;
     }
     Expr *expr = nullptr;
-    if (!check(TokenType::SEMICOLON)) 
+    if (!check(TokenType::SEMICOLON))
         expr = expression();
 
     consume(TokenType::SEMICOLON, previous().construct_err_message("Expected ';' at end of return statement"));
@@ -501,11 +503,11 @@ Stmt *Parser::class_stmt() {
     Token name = consume(TokenType::IDENTIFIER, peek().construct_err_message("Expect class name."));
 
     consume(TokenType::LEFT_BRACE, previous().construct_err_message("Expect '{' before class body."));
-    
+
     std::vector<FuncStmt *> methods;
-    
+
     while (!check(TokenType::RIGHT_BRACE) && !is_at_end()) {
-        methods.push_back((FuncStmt *) function_stmt("method"));
+        methods.push_back((FuncStmt *)function_stmt("method"));
     }
     consume(TokenType::RIGHT_BRACE, previous().construct_err_message("Expect '}' after class body."));
 
@@ -543,7 +545,6 @@ Stmt *Parser::statement() {
 
     return expression_stmt();
 }
-
 
 void Parser::synchronize() {
     advance();

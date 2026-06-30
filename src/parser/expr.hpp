@@ -152,15 +152,56 @@ struct Call : Expr {
 
     std::string visualize() override {
         std::string visz = " (fun call ";
-        
-        if (calle) visz += "calle: (" + calle->visualize() + ") ";
+
+        if (calle)
+            visz += "calle: (" + calle->visualize() + ") ";
         visz += "(args: [";
 
         for (int i = 0; i < args.size(); i++) {
             if (args[i]) {
-                visz += args[i]->visualize() + (i == args.size() - 1 ? "]": ", ");
+                visz += args[i]->visualize() + (i == args.size() - 1 ? "]" : ", ");
             }
         }
+
+        return visz + ")";
+    }
+};
+
+struct Get : Expr {
+    Expr *expr;
+    Token name;
+
+    Get(Expr *expr, Token &name) {
+        this->name = name;
+        this->expr = expr;
+        type = NodeType::GET;
+    }
+
+    std::string visualize() override {
+        std::string visz = "(Get ";
+        if (expr)
+            visz += expr->visualize();
+        return visz + ")";
+    }
+};
+
+struct Set : Expr {
+    Expr *expr, *value;
+    Token name;
+
+    Set(Expr *expr, Expr *value, Token &name) {
+        this->expr = expr;
+        this->value = value;
+        this->name = name;
+        type = NodeType::SET;
+    }
+
+    std::string visualize() override {
+        std::string visz = "(Set ";
+        if (expr)
+            visz += expr->visualize() + ")";
+        if (value)
+            visz += value->visualize() + ")";
 
         return visz + ")";
     }
