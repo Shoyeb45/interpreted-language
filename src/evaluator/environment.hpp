@@ -57,4 +57,23 @@ struct EnvironmentTable {
         std::cerr << "Undeclared variable: " << name << "\n";
         std::exit(70);
     }
+
+    
+    RuntimeValue getAt(std::string &name, int depth) {
+        auto env = ancestor(depth);
+        return env->table.at(name);
+    }
+
+    EnvironmentTable* ancestor(int depth) {
+        EnvironmentTable *env = this;
+        for (int i = 0; i < depth; i++) {
+            env = env->enclosing;
+        }
+        return env;
+    }
+
+    void assignAt(std::string &name, int depth, RuntimeValue &value) {
+        auto env = ancestor(depth);
+        env->table.at(name) = value;
+    }
 };

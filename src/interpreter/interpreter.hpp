@@ -17,10 +17,13 @@ struct Interpreter {
     // always points to global scope
     EnvironmentTable *global = environment;
 
+    std::unordered_map<Expr*, int> locals;
+
     std::vector<std::string> errors;
     std::vector<Stmt *> stmts;
 
     void execute();
+    void resolve(Expr *expr, int depth);
 
     // Main exeuctors
     void execute_stmt(Stmt *stmt);
@@ -44,6 +47,8 @@ struct Interpreter {
     bool check_invalid_values(RuntimeValue &v1, RuntimeValue &v2);
     RuntimeValue evaluate_expr(Expr *expr);
     void report_error();
+    RuntimeValue look_up_variable(Token &name, Expr *expr);
+    RuntimeValue assign_variable(Assign *assign);
 
     Interpreter(std::vector<Stmt *> &stmts) {
         this->stmts = stmts;

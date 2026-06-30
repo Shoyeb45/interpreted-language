@@ -12,6 +12,7 @@
 #include "scanner/scanner.hpp"
 #include "executor/executor.hpp"
 #include "interpreter/interpreter.hpp"
+#include "resolver/resolver.hpp"
 
 std::vector<Token> scan(std::vector<std::string> &file_contents) {
     auto tokens = LexicalScanner::scan_file(file_contents);
@@ -105,6 +106,8 @@ int main(int argc, char *argv[]) {
         // parser->visualize();
 
         Interpreter *interpreter = new Interpreter(stmts);
+        Resolver *resolver = new Resolver(interpreter);
+        resolver->resolve();    
         interpreter->execute();
     } else {
         std::cerr << "Unknown command: " << command << std::endl;

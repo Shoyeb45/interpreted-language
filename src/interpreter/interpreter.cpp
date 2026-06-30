@@ -135,7 +135,7 @@ void Interpreter::execute_while_stmt(WhileStmt *while_stmt) {
 
 void Interpreter::execute_func_stmt(FuncStmt *func_stmt) {
     CustomFunction custm_func(func_stmt, environment);
-    
+
     environment->set(func_stmt->name.lexeme, std::make_shared<CustomFunction>(custm_func));
 }
 
@@ -159,25 +159,10 @@ RuntimeValue Interpreter::evaluate(Expr *node) {
     }
     case NodeType::VARIABLE: {
         Variable *var = static_cast<Variable *>(node);
-
-        if (environment->exists(var->identifier.lexeme)) {
-            return environment->get(var->identifier.lexeme);
-        }
-        errors.push_back(var->identifier.construct_err_message("Undeclared variable: " + var->identifier.lexeme));
-        return nullptr;
+        return look_up_variable(var->identifier, var);
     }
     case NodeType::ASSIGN: {
-        Assign *assign_node = static_cast<Assign *>(node);
-        RuntimeValue value = evaluate(assign_node->value);
-
-        std::string &name = assign_node->identifier.lexeme;
-
-        if (!environment->exists(name)) {
-            errors.push_back(assign_node->identifier.construct_err_message("Undeclared identifier."));
-            return nullptr;
-        }
-        environment->assign(assign_node->identifier, value);
-        return value;
+        return assign_variable(static_cast<Assign *>(node));
     }
     case NodeType::LOGICAL: {
         return perform_logical_operation(static_cast<Logical *>(node));
@@ -187,6 +172,22 @@ RuntimeValue Interpreter::evaluate(Expr *node) {
     }
     };
     return nullptr;
+}
+
+RuntimeValue Interpreter::assign_variable(Assign *assign) {
+    RuntimeValue value = evaluate(assign->value);
+
+    std::string &name = assign->identifier.lexeme;
+
+    if (locals.find(assign) != locals.end()) {
+        int dist = locals.at(assign);
+        environment->assignAt(name, dist, value);
+        return value;
+    }
+
+    global->assign(assign->identifier, value);
+
+    return value;
 }
 
 RuntimeValue Interpreter::perform_binary_operation(Binary *binary_node) {
@@ -358,4 +359,22 @@ void Interpreter::report_error() {
     for (auto &err : errors) {
         std::cerr << err << "\n";
     }
+}
+
+void Interpreter::resolve(Expr *expr, int depth) {
+    locals[expr] = depth;
+}
+
+RuntimeValue Interpreter::look_up_variable(Token &name, Expr *expr) {
+    if (locals.find(expr) != locals.end()) {
+        int dist = locals.at(expr);
+        return environment->getAt(name.lexeme, dist);
+    }
+
+    if (global->exists(name.lexeme))
+        return global->get(name.lexeme);
+
+    errors.push_back(name.construct_err_message("Undeclared variable: " + name.lexeme));
+    report_error();
+    std::exit(70);
 }
