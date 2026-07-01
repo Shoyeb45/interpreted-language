@@ -104,6 +104,8 @@ void Resolver::resolve_while_stmt(WhileStmt *while_stmt) {
 }
 
 void Resolver::resolve_class_declaration(ClassStmt *class_stmt) {
+    ClassType enclosing_class = current_class;
+    current_class = ClassType::CLASS;
     declare(class_stmt->name);
     define(class_stmt->name);
 
@@ -113,8 +115,10 @@ void Resolver::resolve_class_declaration(ClassStmt *class_stmt) {
     for (FuncStmt *stmt : class_stmt->methods) {
         resolve_function(stmt, "method");
     }
-    
+
     end_scope();
+
+    current_class = enclosing_class;
 }
 
 void Resolver::resolve(Stmt *stmt) {
@@ -204,6 +208,10 @@ void Resolver::resolve_set_expr(Set *set) {
 }
 
 void Resolver::resolve_this_expr(This *this_node) {
+    if (current_class == ClassType::NONE) {
+        std::cerr << this_node->name.construct_err_message("Can't use 'this' outside of a class.") << "\n";
+        std::exit(65);
+    }
     resolve_local(this_node, this_node->name);
 }
 

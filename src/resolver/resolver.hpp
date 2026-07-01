@@ -9,6 +9,12 @@ struct Resolver {
   private:
     Interpreter *interpreter;
     std::vector<std::unordered_map<std::string, bool>> scopes;
+    
+    enum ClassType {
+      NONE,
+      CLASS,
+    };
+    ClassType current_class = ClassType::NONE;
 
     void define(Token &name);
     void declare(Token &name);
