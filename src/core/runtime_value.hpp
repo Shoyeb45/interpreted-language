@@ -8,6 +8,11 @@ struct Callable;
 struct AetherClass;
 struct AetherInstance;
 
+enum CallableType {
+    CLASS,
+    FUNCTION,
+};
+
 using RuntimeValue =
     std::variant<double, bool, std::string, std::nullptr_t, std::shared_ptr<Callable>, std::shared_ptr<AetherInstance>>;
 

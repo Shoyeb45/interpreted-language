@@ -507,6 +507,11 @@ Stmt *Parser::return_stmt() {
 Stmt *Parser::class_stmt() {
     Token name = consume(TokenType::IDENTIFIER, peek().construct_err_message("Expect class name."));
 
+    Variable *super_class = nullptr;
+    if (match(TokenType::LESS)) {
+        consume(TokenType::IDENTIFIER, previous().construct_err_message("Expect superclass name."));
+        super_class = new Variable(previous());
+    }
     consume(TokenType::LEFT_BRACE, previous().construct_err_message("Expect '{' before class body."));
 
     std::vector<FuncStmt *> methods;
@@ -516,7 +521,7 @@ Stmt *Parser::class_stmt() {
     }
     consume(TokenType::RIGHT_BRACE, previous().construct_err_message("Expect '}' after class body."));
 
-    return new ClassStmt(name, methods);
+    return new ClassStmt(name, methods, super_class);
 }
 
 Stmt *Parser::statement() {

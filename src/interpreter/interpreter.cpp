@@ -32,13 +32,25 @@ void Interpreter::execute_return_stmt(ReturnStmt *return_stmt) {
 }
 
 void Interpreter::execute_class_stmt(ClassStmt *class_stmt) {
+    RuntimeValue super_class = nullptr;
+    
+    if (class_stmt->super_class) {
+        super_class = evaluate(class_stmt->super_class);
+
+        if (!(is_callable(super_class) && get_callable(super_class)->type == CallableType::CLASS)) {
+            errors.push_back(class_stmt->super_class->identifier.construct_err_message("Superclass must be a class."));
+            report_error();
+            std::exit(70);
+        }
+    }
     std::unordered_map<std::string, std::shared_ptr<Callable>> methods;
 
     for (FuncStmt *stmt : class_stmt->methods) {
-        methods[stmt->name.lexeme] = std::make_shared<CustomFunction>(CustomFunction{stmt, environment, stmt->name.lexeme == "init"});
+        methods[stmt->name.lexeme] =
+            std::make_shared<CustomFunction>(CustomFunction{stmt, environment, stmt->name.lexeme == "init"});
     }
-  
-    AetherClass aether_class(class_stmt->name.lexeme, methods);
+
+    AetherClass aether_class(class_stmt->name.lexeme, methods, (is_callable(super_class) ? get_callable(super_class) : nullptr));
     environment->set(class_stmt->name.lexeme, std::make_shared<AetherClass>(aether_class));
 }
 

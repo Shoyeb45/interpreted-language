@@ -178,11 +178,13 @@ struct ReturnStmt : Stmt {
 struct ClassStmt : Stmt {
     Token name;
     std::vector<FuncStmt *> methods;
+    Variable *super_class;
 
-    ClassStmt(Token &name, std::vector<FuncStmt *> &methods) {
+    ClassStmt(Token &name, std::vector<FuncStmt *> &methods, Variable *super_class) {
         type = NodeType::CLASS_STMT;
         this->name = name;
         this->methods = methods;
+        this->super_class = super_class;
     }
 
     std::string visualize() override {

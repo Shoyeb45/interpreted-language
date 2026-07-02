@@ -97,7 +97,8 @@ void Resolver::resolve_print_stmt(PrintStmt *print_stmt) {
 void Resolver::resolve_return_stmt(ReturnStmt *return_stmt) {
     if (return_stmt->expr) {
         if (current_fun == FunctionType::INTIALIZER) {
-            std::cerr << return_stmt->keyword.construct_err_message("Can't return a value from an initializer.") << "\n";
+            std::cerr << return_stmt->keyword.construct_err_message("Can't return a value from an initializer.")
+                      << "\n";
             std::exit(65);
         }
         resolve_expr(return_stmt->expr);
@@ -115,6 +116,14 @@ void Resolver::resolve_class_declaration(ClassStmt *class_stmt) {
     declare(class_stmt->name);
     define(class_stmt->name);
 
+    if (class_stmt->super_class && class_stmt->name.lexeme == class_stmt->super_class->identifier.lexeme) {
+        std::cerr << class_stmt->super_class->identifier.construct_err_message("A class can't inherit from itself.")
+                  << "\n";
+        std::exit(65);
+    }
+    if (class_stmt->super_class) {
+        resolve_expr(class_stmt->super_class);
+    }
     begin_scope();
     scopes.back()["this"] = true;
 
