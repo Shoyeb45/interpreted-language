@@ -10,15 +10,16 @@ struct Resolver {
     Interpreter *interpreter;
     std::vector<std::unordered_map<std::string, bool>> scopes;
     
-    enum ClassType {
+    enum class ClassType {
       NONE,
       CLASS,
     };
 
-    enum FunctionType {
+    enum class FunctionType {
       FUNCTION,
       METHOD,
       INTIALIZER,
+      NONE,
     };
 
     ClassType current_class = ClassType::NONE;

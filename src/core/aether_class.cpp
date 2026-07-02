@@ -28,27 +28,29 @@ std::string AetherClass::to_string() {
 }
 
 std::shared_ptr<Callable> AetherClass::find_method(std::string &name) {
-    if (methods.find(name) != methods.end()) {
-        return methods.at(name);
-    }
+    auto it = methods.find(name);
+    if (it != methods.end())
+        return it->second;
+
+    if (super_class)
+        return super_class->find_method(name);
 
     return nullptr;
 }
-
 int AetherClass::arity() {
     std::string init = "init";
 
     auto initializer = find_method(init);
-    if (initializer) return initializer->arity();
+    if (initializer)
+        return initializer->arity();
     return 0;
 }
 
 RuntimeValue AetherClass::call(Interpreter *interpreter, const std::vector<RuntimeValue> &args) {
-    AetherInstance instance(this);
     std::string _init = "init";
     auto init = find_method(_init);
 
-    auto ptr = std::make_shared<AetherInstance>(instance);
+    auto ptr = std::make_shared<AetherInstance>(std::static_pointer_cast<AetherClass>(shared_from_this()));
     if (init) {
         RuntimeValue constructor = init->bind(ptr);
         if (is_callable(constructor)) {

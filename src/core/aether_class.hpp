@@ -5,23 +5,23 @@
 #include <unordered_map>
 
 struct AetherInstance : std::enable_shared_from_this<AetherInstance> {
-    AetherClass *aether_class;
+    std::shared_ptr<AetherClass> aether_class;
     std::unordered_map<std::string, RuntimeValue> fields;
 
-    AetherInstance(AetherClass *aether_class) : aether_class(aether_class) {}
+    AetherInstance(std::shared_ptr<AetherClass> aether_class) : aether_class(aether_class) {}
 
     std::string to_string();
     RuntimeValue get(Token &name);
     void set(Token &name, RuntimeValue &value);
 };
 
-struct AetherClass : Callable {
+struct AetherClass : Callable, std::enable_shared_from_this<AetherClass> {
     std::string name;
     std::unordered_map<std::string, std::shared_ptr<Callable>> methods;
-    std::shared_ptr<Callable> super_class;
+    std::shared_ptr<AetherClass> super_class;
 
     AetherClass(std::string &name, std::unordered_map<std::string, std::shared_ptr<Callable>> methods,
-                std::shared_ptr<Callable> super_class)
+                std::shared_ptr<AetherClass> super_class)
         : name(name), methods(methods), super_class(super_class) {
         type = CallableType::CLASS;
     }

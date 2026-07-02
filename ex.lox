@@ -1,17 +1,24 @@
-class Vehicle {}
-
-// Car is a subclass of Vehicle
-class Car < Vehicle {}
-
-// Sedan is a subclass of Car
-class Sedan < Car {}
-
-print Vehicle();
-print Car();
-print Sedan();
-
-{
-  // Truck is a subclass of Vehicle
-  class Truck < Vehicle {}
-  print Truck();
+class baz {
+  inbaz() {
+    print "from baz";
+  }
 }
+
+class hello < baz {
+  inhello() {
+    print "from hello";
+  }
+}
+
+class world < hello {
+  inworld() {
+    print "from world";
+  }
+}
+
+// world should inherit the methods
+// from both baz and hello
+var world = world();
+world.inbaz();
+world.inhello();
+world.inworld();

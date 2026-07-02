@@ -33,7 +33,8 @@ void Interpreter::execute_return_stmt(ReturnStmt *return_stmt) {
 
 void Interpreter::execute_class_stmt(ClassStmt *class_stmt) {
     RuntimeValue super_class = nullptr;
-    
+
+    bool is_super_class = false;
     if (class_stmt->super_class) {
         super_class = evaluate(class_stmt->super_class);
 
@@ -42,6 +43,7 @@ void Interpreter::execute_class_stmt(ClassStmt *class_stmt) {
             report_error();
             std::exit(70);
         }
+        is_super_class = true;
     }
     std::unordered_map<std::string, std::shared_ptr<Callable>> methods;
 
@@ -50,8 +52,11 @@ void Interpreter::execute_class_stmt(ClassStmt *class_stmt) {
             std::make_shared<CustomFunction>(CustomFunction{stmt, environment, stmt->name.lexeme == "init"});
     }
 
-    AetherClass aether_class(class_stmt->name.lexeme, methods, (is_callable(super_class) ? get_callable(super_class) : nullptr));
-    environment->set(class_stmt->name.lexeme, std::make_shared<AetherClass>(aether_class));
+    auto klass = std::make_shared<AetherClass>(
+        class_stmt->name.lexeme, methods,
+        is_super_class ? std::dynamic_pointer_cast<AetherClass>(get_callable(super_class)) : nullptr);
+
+    environment->set(class_stmt->name.lexeme, klass);
 }
 
 void Interpreter::execute_stmt(Stmt *stmt) {

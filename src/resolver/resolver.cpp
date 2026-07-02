@@ -53,6 +53,7 @@ void Resolver::resolve_function(FuncStmt *fun_stmt, FunctionType function_type) 
     }
     resolve_stmts(fun_stmt->body->stmts);
     end_scope();
+    current_fun = FunctionType::NONE;
 }
 
 void Resolver::resolve_block_stmt(BlockStmt *block_stmt) {
