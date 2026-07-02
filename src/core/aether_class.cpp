@@ -36,10 +36,25 @@ std::shared_ptr<Callable> AetherClass::find_method(std::string &name) {
 }
 
 int AetherClass::arity() {
+    std::string init = "init";
+
+    auto initializer = find_method(init);
+    if (initializer) return initializer->arity();
     return 0;
 }
 
 RuntimeValue AetherClass::call(Interpreter *interpreter, const std::vector<RuntimeValue> &args) {
     AetherInstance instance(this);
-    return std::make_shared<AetherInstance>(instance);
+    std::string _init = "init";
+    auto init = find_method(_init);
+
+    auto ptr = std::make_shared<AetherInstance>(instance);
+    if (init) {
+        RuntimeValue constructor = init->bind(ptr);
+        if (is_callable(constructor)) {
+            get_callable(constructor)->call(interpreter, args);
+        }
+    }
+
+    return ptr;
 }

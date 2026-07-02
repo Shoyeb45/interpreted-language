@@ -35,7 +35,7 @@ void Interpreter::execute_class_stmt(ClassStmt *class_stmt) {
     std::unordered_map<std::string, std::shared_ptr<Callable>> methods;
 
     for (FuncStmt *stmt : class_stmt->methods) {
-        methods[stmt->name.lexeme] = std::make_shared<CustomFunction>(CustomFunction{stmt, environment});
+        methods[stmt->name.lexeme] = std::make_shared<CustomFunction>(CustomFunction{stmt, environment, stmt->name.lexeme == "init"});
     }
   
     AetherClass aether_class(class_stmt->name.lexeme, methods);

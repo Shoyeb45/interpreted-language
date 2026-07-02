@@ -34,6 +34,8 @@ RuntimeValue CustomFunction::call(Interpreter *interpreter, const std::vector<Ru
         return excp.value;
     }
 
+    std::string this_str = "this";
+    if (is_initializer) return closure->getAt(this_str, 0);
     return nullptr;
 }
 
@@ -51,5 +53,5 @@ RuntimeValue CustomFunction::bind(std::shared_ptr<AetherInstance> instance) {
 
     env->set(name, instance);
     
-    return std::make_shared<CustomFunction>(CustomFunction(declaration, env));
+    return std::make_shared<CustomFunction>(CustomFunction(declaration, env, is_initializer));
 }

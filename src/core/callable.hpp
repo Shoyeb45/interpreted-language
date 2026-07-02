@@ -28,9 +28,10 @@ struct ClockFunction : Callable {
 struct CustomFunction : Callable {
     FuncStmt *declaration;
     EnvironmentTable *closure;
+    bool is_initializer;
 
-    CustomFunction(FuncStmt *declaration, EnvironmentTable *closure)
-        : declaration(declaration), closure(closure) {}
+    CustomFunction(FuncStmt *declaration, EnvironmentTable *closure, bool is_initializer = false)
+        : declaration(declaration), closure(closure), is_initializer(is_initializer) {}
 
     RuntimeValue call(Interpreter *interpreter, const std::vector<RuntimeValue> &args);
     int arity();
